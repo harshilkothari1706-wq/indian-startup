@@ -1,0 +1,6 @@
+{
+  "name": "Indian Startup Stories",
+  "description": "Real Founders. Real Journeys. Real Stories. The premier business magazine and editorial platform exploring India's startup ecosystem.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
