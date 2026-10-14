@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Search, X, ArrowRight, User, Building, Layers, FileText } from 'lucide-react';
+import { Search, X, ArrowRight, User, Layers, FileText } from 'lucide-react';
 import { STARTUP_STORIES } from '../data/startups';
 import { FOUNDERS } from '../data/founders';
 import { INDUSTRIES } from '../data/industries';
@@ -7,15 +7,13 @@ import { INDUSTRIES } from '../data/industries';
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectStory: (slug: string) => void;
-  onSelectIndustry: (industryId: string) => void;
+  onNavigate: (path: string) => void;
 }
 
 export const SearchModal: React.FC<SearchModalProps> = ({
   isOpen,
   onClose,
-  onSelectStory,
-  onSelectIndustry,
+  onNavigate,
 }) => {
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -28,7 +26,6 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     }
   }, [isOpen]);
 
-  // Keyboard shortcut listener (Escape to close, Cmd+K to open)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -39,7 +36,6 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Search Results across Startups, Founders, Industries, Keywords (Section 14 requirement)
   const results = useMemo(() => {
     if (!query.trim()) return null;
     const q = query.toLowerCase().trim();
@@ -76,6 +72,12 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     };
   }, [query]);
 
+  const handleResultClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    e.preventDefault();
+    onNavigate(path);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -87,7 +89,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
       {/* Modal Card */}
       <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl border border-[#0B1F3A]/20 overflow-hidden z-10 animate-in zoom-in-95 duration-150">
         
-        {/* Search Bar Input (Section 14: Search startups, founders, industries...) */}
+        {/* Search Bar Input */}
         <div className="relative flex items-center px-4 py-3.5 border-b border-[#0B1F3A]/10 bg-[#F7F5F0]">
           <Search className="w-5 h-5 text-[#0B1F3A]/60 mr-3 shrink-0" />
           <input
@@ -102,6 +104,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
             <button
               onClick={() => setQuery('')}
               className="p-1 text-[#171717]/40 hover:text-[#0B1F3A] mr-1"
+              aria-label="Clear query text"
             >
               ✕
             </button>
@@ -109,6 +112,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           <button
             onClick={onClose}
             className="p-1 rounded-md text-[#171717]/50 hover:text-[#0B1F3A] hover:bg-black/5"
+            aria-label="Close search dialog"
           >
             <X className="w-5 h-5" />
           </button>
@@ -156,31 +160,33 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 <span>Startup Case Studies ({results.stories.length})</span>
               </div>
               <div className="space-y-1.5">
-                {results.stories.map((story) => (
-                  <div
-                    key={story.id}
-                    onClick={() => {
-                      onSelectStory(story.slug);
-                      onClose();
-                    }}
-                    className="p-3 rounded-lg hover:bg-[#F7F5F0] cursor-pointer flex items-center justify-between group transition-colors border border-transparent hover:border-[#0B1F3A]/10"
-                  >
-                    <div>
-                      <div className="flex items-center gap-2 text-[11px] text-[#171717]/60">
-                        <span className="font-semibold text-[#0B1F3A]">{story.category}</span>
-                        <span aria-hidden="true">·</span>
-                        <span>{story.readingTime}</span>
+                {results.stories.map((story) => {
+                  const path = `/startup-stories/${story.slug}`;
+                  return (
+                    <a
+                      key={story.id}
+                      href={path}
+                      onClick={(e) => handleResultClick(e, path)}
+                      title={`Read full ${story.title} case study`}
+                      className="p-3 rounded-lg hover:bg-[#F7F5F0] cursor-pointer flex items-center justify-between group transition-colors border border-transparent hover:border-[#0B1F3A]/10 block"
+                    >
+                      <div>
+                        <div className="flex items-center gap-2 text-[11px] text-[#171717]/60">
+                          <span className="font-semibold text-[#0B1F3A]">{story.category}</span>
+                          <span aria-hidden="true">·</span>
+                          <span>{story.readingTime}</span>
+                        </div>
+                        <h4 className="font-display font-bold text-sm text-[#0B1F3A] group-hover:text-[#FF7A00] transition-colors">
+                          {story.title}
+                        </h4>
+                        <p className="text-xs text-[#171717]/70 line-clamp-1">
+                          Founders: {story.quickFacts.founders}
+                        </p>
                       </div>
-                      <h4 className="font-display font-bold text-sm text-[#0B1F3A] group-hover:text-[#FF7A00] transition-colors">
-                        {story.title}
-                      </h4>
-                      <p className="text-xs text-[#171717]/70 line-clamp-1">
-                        Founders: {story.quickFacts.founders}
-                      </p>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-[#0B1F3A] group-hover:text-[#FF7A00] shrink-0 ml-2" />
-                  </div>
-                ))}
+                      <ArrowRight className="w-4 h-4 text-[#0B1F3A] group-hover:text-[#FF7A00] shrink-0 ml-2" />
+                    </a>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -193,29 +199,31 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 <span>Founders ({results.founders.length})</span>
               </div>
               <div className="space-y-1.5">
-                {results.founders.map((founder) => (
-                  <div
-                    key={founder.id}
-                    onClick={() => {
-                      onSelectStory(founder.startupSlug);
-                      onClose();
-                    }}
-                    className="p-3 rounded-lg hover:bg-[#F7F5F0] cursor-pointer flex items-center justify-between group transition-colors border border-transparent hover:border-[#0B1F3A]/10"
-                  >
-                    <div>
-                      <h4 className="font-display font-bold text-sm text-[#0B1F3A] group-hover:text-[#FF7A00] transition-colors">
-                        {founder.name}
-                      </h4>
-                      <p className="text-xs text-[#171717]/70">
-                        {founder.role} at {founder.startup} · {founder.education}
-                      </p>
-                    </div>
-                    <span className="text-xs font-semibold text-[#0B1F3A] group-hover:text-[#FF7A00] flex items-center gap-1">
-                      <span>View Story</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </span>
-                  </div>
-                ))}
+                {results.founders.map((founder) => {
+                  const path = `/startup-stories/${founder.startupSlug}`;
+                  return (
+                    <a
+                      key={founder.id}
+                      href={path}
+                      onClick={(e) => handleResultClick(e, path)}
+                      title={`Read ${founder.name}'s story at ${founder.startup}`}
+                      className="p-3 rounded-lg hover:bg-[#F7F5F0] cursor-pointer flex items-center justify-between group transition-colors border border-transparent hover:border-[#0B1F3A]/10 block"
+                    >
+                      <div>
+                        <h4 className="font-display font-bold text-sm text-[#0B1F3A] group-hover:text-[#FF7A00] transition-colors">
+                          {founder.name}
+                        </h4>
+                        <p className="text-xs text-[#171717]/70">
+                          {founder.role} at {founder.startup} · {founder.education}
+                        </p>
+                      </div>
+                      <span className="text-xs font-semibold text-[#0B1F3A] group-hover:text-[#FF7A00] flex items-center gap-1">
+                        <span>View {founder.startup} Story</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                    </a>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -228,26 +236,28 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 <span>Industries ({results.industries.length})</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {results.industries.map((ind) => (
-                  <div
-                    key={ind.id}
-                    onClick={() => {
-                      onSelectIndustry(ind.id);
-                      onClose();
-                    }}
-                    className="p-3 bg-[#F7F5F0] rounded-lg hover:bg-[#0B1F3A] hover:text-white cursor-pointer group transition-all"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">{ind.emoji}</span>
-                      <span className="font-display font-bold text-sm group-hover:text-white">
-                        {ind.name}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-[#171717]/70 group-hover:text-white/80 mt-1 line-clamp-1">
-                      {ind.startups.join(', ')}
-                    </p>
-                  </div>
-                ))}
+                {results.industries.map((ind) => {
+                  const path = `/startup-stories?industry=${ind.id}`;
+                  return (
+                    <a
+                      key={ind.id}
+                      href={path}
+                      onClick={(e) => handleResultClick(e, path)}
+                      title={`View all ${ind.name} startup case studies`}
+                      className="p-3 bg-[#F7F5F0] rounded-lg hover:bg-[#0B1F3A] hover:text-white cursor-pointer group transition-all block"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{ind.emoji}</span>
+                        <span className="font-display font-bold text-sm group-hover:text-white">
+                          {ind.name}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#171717]/70 group-hover:text-white/80 mt-1 line-clamp-1">
+                        {ind.startups.join(', ')}
+                      </p>
+                    </a>
+                  );
+                })}
               </div>
             </div>
           )}

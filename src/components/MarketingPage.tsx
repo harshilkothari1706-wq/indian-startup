@@ -1,41 +1,49 @@
 import React, { useState } from 'react';
-import { ArrowRight, Sparkles, BookOpen, ChevronRight, Award, Target } from 'lucide-react';
+import { ArrowRight, BookOpen, ChevronRight, Award, Target } from 'lucide-react';
 import { MARKETING_STORIES, MarketingCaseStudy } from '../data/marketingStories';
 
 interface MarketingPageProps {
-  onSelectStory: (slug: string) => void;
+  onNavigate: (path: string) => void;
 }
 
-export const MarketingPage: React.FC<MarketingPageProps> = ({ onSelectStory }) => {
+export const MarketingPage: React.FC<MarketingPageProps> = ({ onNavigate }) => {
   const [selectedCaseId, setSelectedCaseId] = useState<string>(MARKETING_STORIES[0].id);
 
   const activeCase = MARKETING_STORIES.find((c) => c.id === selectedCaseId) || MARKETING_STORIES[0];
+  const storyUrl = `/startup-stories/${activeCase.startupSlug}`;
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    e.preventDefault();
+    onNavigate(path);
+  };
 
   return (
-    <section className="py-12 bg-[#F7F5F0] min-h-screen">
+    <section aria-labelledby="marketing-heading" className="py-12 bg-[#F7F5F0] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
+        {/* Section Header with Question-Answer Format for AEO */}
         <div className="mb-10 pb-6 border-b border-[#0B1F3A]/10">
           <div className="flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-[#FF7A00] mb-2">
             <Target className="w-4 h-4 text-[#FF7A00]" />
             <span>DIGITAL BUSINESS & MARKETING STRATEGY</span>
           </div>
-          <h1 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#0B1F3A] tracking-tight">
-            Marketing Playbooks
+
+          <h1 id="marketing-heading" className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#0B1F3A] tracking-tight">
+            How Do India's Boldest Consumer Brands Master Growth and Marketing?
           </h1>
-          <p className="mt-3 text-base text-[#171717]/80 max-w-3xl font-body">
-            Deep-dive strategic breakdowns curated specifically for BBA, MBA, and Digital Marketing students. How India's top consumer brands cracked organic virality, community tribes, and customer acquisition moats.
-          </p>
+
+          <div className="mt-4 p-4 bg-amber-50/80 border-l-3 border-[#FF7A00] rounded-r-lg text-xs sm:text-sm text-[#0B1F3A] font-medium leading-relaxed font-body max-w-4xl">
+            <strong>Direct Answer:</strong> Indian consumer startups like Zomato, boAt, Nykaa, CRED, and Zerodha rejected conventional advertising formulas. They succeeded by engineering memetic brand personas, treating customers as cultural tribes ("boAtheads"), bridging educational content to commerce, using subversive celebrity humor, and replacing paid ads with free university-grade investor education.
+          </div>
         </div>
 
         {/* Master-Detail Interactive Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Rail: 5 Featured Case Studies List (Section 17 requirement) */}
+          {/* Left Rail: 5 Featured Case Studies List */}
           <div className="lg:col-span-5 space-y-3">
             <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-[#0B1F3A]/70 mb-2">
-              Featured Case Studies
+              Featured Marketing Case Studies
             </h2>
 
             {MARKETING_STORIES.map((study: MarketingCaseStudy) => {
@@ -59,7 +67,7 @@ export const MarketingPage: React.FC<MarketingPageProps> = ({ onSelectStory }) =
                       {study.startup.toUpperCase()} · {study.category}
                     </span>
                     <span className={isSelected ? 'text-white/60' : 'text-[#171717]/50'}>
-                      Case Breakdown
+                      Strategic Dossier
                     </span>
                   </div>
 
@@ -87,18 +95,20 @@ export const MarketingPage: React.FC<MarketingPageProps> = ({ onSelectStory }) =
           {/* Right Rail: Selected Deep Dive Analysis */}
           <div className="lg:col-span-7 bg-white rounded-xl border border-[#0B1F3A]/15 p-6 sm:p-8 shadow-xs">
             
-            {/* Case Study Header */}
+            {/* Case Study Header with Semantic Anchor Text (Requirement 6) */}
             <div className="flex items-center justify-between pb-3 border-b border-[#0B1F3A]/10 mb-4">
               <span className="text-xs font-mono font-bold text-[#FF7A00] tracking-wider uppercase">
                 {activeCase.startup} · STRATEGY DOSSIER
               </span>
-              <button
-                onClick={() => onSelectStory(activeCase.startupSlug)}
-                className="text-xs font-bold text-[#0B1F3A] hover:text-[#FF7A00] flex items-center gap-1"
+              <a
+                href={storyUrl}
+                onClick={(e) => handleLinkClick(e, storyUrl)}
+                title={`Read full ${activeCase.startup} startup story, founders, and financials`}
+                className="text-xs font-bold text-[#0B1F3A] hover:text-[#FF7A00] flex items-center gap-1 transition-colors"
               >
-                <span>Read Full Startup Story</span>
+                <span>Read Full {activeCase.startup} Story</span>
                 <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              </a>
             </div>
 
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B1F3A] leading-tight">
@@ -120,7 +130,7 @@ export const MarketingPage: React.FC<MarketingPageProps> = ({ onSelectStory }) =
                 <span className="font-semibold text-[#0B1F3A]">{activeCase.targetAudience}</span>
               </div>
               <div>
-                <span className="font-mono text-[11px] text-[#171717]/60 block">CORE CONCEPT</span>
+                <span className="font-mono text-[11px] text-[#171717]/60 block">CORE MARKETING CONCEPT</span>
                 <span className="font-semibold text-[#0B1F3A]">{activeCase.coreMarketingConcept}</span>
               </div>
             </div>
@@ -183,7 +193,7 @@ export const MarketingPage: React.FC<MarketingPageProps> = ({ onSelectStory }) =
             <div className="mt-8 p-5 bg-[#0B1F3A] text-white rounded-xl">
               <div className="flex items-center gap-2 text-xs font-bold text-[#FF7A00] uppercase mb-1">
                 <Award className="w-4 h-4" />
-                <span>Executive Student Takeaway</span>
+                <span>Executive Academic Takeaway</span>
               </div>
               <p className="text-xs sm:text-sm text-white/90 leading-relaxed font-body">
                 {activeCase.studentTakeaway}

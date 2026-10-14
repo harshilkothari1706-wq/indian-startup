@@ -10,24 +10,26 @@ export const FailureStoriesPage: React.FC = () => {
   };
 
   return (
-    <section className="py-12 bg-[#F7F5F0] min-h-screen">
+    <section aria-labelledby="failures-heading" className="py-12 bg-[#F7F5F0] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
+        {/* Section Header with Question-Answer Format for AEO */}
         <div className="mb-8 pb-4 border-b border-[#0B1F3A]/10">
           <div className="flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-[#E23744] mb-2">
             <AlertTriangle className="w-4 h-4 text-[#E23744]" />
-            <span>CRITICAL RETROSPECTIVES</span>
+            <span>CRITICAL RETROSPECTIVES & UNIT ECONOMICS</span>
           </div>
-          <h1 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#0B1F3A] tracking-tight">
-            Startup Lessons From Failure
+
+          <h1 id="failures-heading" className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#0B1F3A] tracking-tight">
+            Why Do Tech Startups Fail in India and What Are the Core Lessons?
           </h1>
-          <p className="mt-3 text-base text-[#171717]/80 max-w-3xl font-body">
-            Entrepreneurship carries inherent risk. Rather than sensationalizing downturns, we objectively study failed unit economics, hyper-scaling traps, and corporate governance missteps to extract enduring lessons for business students and founders.
-          </p>
+
+          <div className="mt-4 p-4 bg-amber-50/80 border-l-3 border-[#FF7A00] rounded-r-lg text-xs sm:text-sm text-[#0B1F3A] font-medium leading-relaxed font-body max-w-4xl">
+            <strong>Direct Answer:</strong> The primary causes of startup failure in India are negative contribution margins (losing money on every order subsidized by VC cash), premature geographic expansion ahead of customer retention, high inventory write-downs in seasonal fashion, and taking high-interest debt loans without timely financial audits.
+          </div>
         </div>
 
-        {/* Respectful Editorial Standard Notice (Section 18 requirement) */}
+        {/* Respectful Editorial Standard Notice */}
         <div className="mb-10 p-4 bg-white border border-[#0B1F3A]/15 rounded-xl shadow-xs flex items-start gap-3 text-xs text-[#171717]/80 font-body">
           <ShieldCheck className="w-5 h-5 text-[#0B1F3A] shrink-0 mt-0.5" />
           <div>
@@ -35,7 +37,7 @@ export const FailureStoriesPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Failure Case Studies Accordion / Cards List */}
+        {/* Failure Case Studies Accordion */}
         <div className="space-y-6">
           {FAILURE_STORIES.map((study: FailureCaseStudy) => {
             const isExpanded = expandedId === study.id;
@@ -65,7 +67,7 @@ export const FailureStoriesPage: React.FC = () => {
                     </div>
 
                     <h2 className="font-display font-extrabold text-xl sm:text-2xl text-[#0B1F3A]">
-                      {study.startup}
+                      {study.startup}: Why Did It Struggle?
                     </h2>
 
                     <p className="mt-1 text-xs sm:text-sm text-[#171717]/75 font-body">
@@ -81,9 +83,13 @@ export const FailureStoriesPage: React.FC = () => {
                       </span>
                     </div>
 
-                    <div className="w-8 h-8 rounded-full bg-[#F7F5F0] border border-[#0B1F3A]/10 flex items-center justify-center text-[#0B1F3A]">
+                    <button
+                      type="button"
+                      className="w-8 h-8 rounded-full bg-[#F7F5F0] border border-[#0B1F3A]/10 flex items-center justify-center text-[#0B1F3A]"
+                      aria-label={isExpanded ? `Collapse ${study.startup} case study` : `Expand ${study.startup} case study`}
+                    >
                       {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                    </div>
+                    </button>
                   </div>
                 </div>
 

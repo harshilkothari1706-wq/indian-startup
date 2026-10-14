@@ -1,15 +1,18 @@
 import React from 'react';
-import { ActiveTab } from './Header';
 import { ShieldCheck, Heart } from 'lucide-react';
 
 interface FooterProps {
-  onSelectTab: (tab: ActiveTab) => void;
-  onSelectStory: (slug: string) => void;
+  onNavigate: (path: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onSelectTab, onSelectStory }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    e.preventDefault();
+    onNavigate(path);
+  };
+
   return (
-    <footer className="bg-[#0B1F3A] text-white border-t border-white/10 pt-14 pb-10">
+    <footer aria-label="Site Footer" className="bg-[#0B1F3A] text-white border-t border-white/10 pt-14 pb-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Grid */}
@@ -21,9 +24,14 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onSelectStory }) =>
               <div className="w-8 h-8 rounded bg-[#FF7A00] flex items-center justify-center font-display font-bold text-[#0B1F3A] text-base">
                 IS
               </div>
-              <span className="font-display font-extrabold text-xl text-white tracking-tight">
+              <a
+                href="/"
+                onClick={(e) => handleLinkClick(e, '/')}
+                title="Indian Startup Stories Homepage"
+                className="font-display font-extrabold text-xl text-white tracking-tight hover:text-[#FF7A00] transition-colors"
+              >
                 INDIAN STARTUP STORIES
-              </span>
+              </a>
             </div>
 
             <p className="text-xs text-white/70 leading-relaxed font-body max-w-sm">
@@ -36,154 +44,186 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onSelectStory }) =>
             </div>
           </div>
 
-          {/* Nav: Sections */}
-          <div>
-            <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-[#FF7A00] mb-3">
+          {/* Nav: Sections with Rich Anchor Text (Requirement 6) */}
+          <nav aria-label="Footer Section Directory">
+            <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-[#FF7A00] mb-3">
               Editorial Sections
-            </h4>
+            </h3>
             <ul className="space-y-2 text-xs text-white/80 font-body">
               <li>
-                <button
-                  onClick={() => onSelectTab('home')}
+                <a
+                  href="/"
+                  onClick={(e) => handleLinkClick(e, '/')}
                   className="hover:text-white transition-colors"
+                  title="Return to Indian Startup Stories Homepage"
                 >
-                  Home
-                </button>
+                  Home Overview
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onSelectTab('stories')}
+                <a
+                  href="/startup-stories"
+                  onClick={(e) => handleLinkClick(e, '/startup-stories')}
                   className="hover:text-white transition-colors"
+                  title="Browse All 10 Startup Case Studies"
                 >
-                  Startup Stories
-                </button>
+                  Startup Stories Directory
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onSelectTab('founders')}
+                <a
+                  href="/founders"
+                  onClick={(e) => handleLinkClick(e, '/founders')}
                   className="hover:text-white transition-colors"
+                  title="Meet Indian Startup Founders and Leadership"
                 >
                   Meet the Founders
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onSelectTab('industries')}
+                <a
+                  href="/industries"
+                  onClick={(e) => handleLinkClick(e, '/industries')}
                   className="hover:text-white transition-colors"
+                  title="Explore 8 Booming Startup Industries"
                 >
                   Explore Industries
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onSelectTab('marketing')}
+                <a
+                  href="/marketing"
+                  onClick={(e) => handleLinkClick(e, '/marketing')}
                   className="hover:text-white transition-colors"
+                  title="Study Startup Marketing Strategies & Playbooks"
                 >
                   Marketing Playbooks
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onSelectTab('funding')}
+                <a
+                  href="/funding"
+                  onClick={(e) => handleLinkClick(e, '/funding')}
                   className="hover:text-white transition-colors"
+                  title="View Verified Indian Startup Funding Tracker"
                 >
-                  Funding Tracker
-                </button>
+                  Startup Funding Tracker
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onSelectTab('failures')}
+                <a
+                  href="/failure-stories"
+                  onClick={(e) => handleLinkClick(e, '/failure-stories')}
                   className="hover:text-white transition-colors"
+                  title="Read Critical Lessons from Failed Startups"
                 >
                   Lessons From Failure
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onSelectTab('about')}
+                <a
+                  href="/about"
+                  onClick={(e) => handleLinkClick(e, '/about')}
                   className="hover:text-white transition-colors"
+                  title="Read Our Mission and Editorial Verification Policy"
                 >
-                  About & Mission
-                </button>
+                  About & Editorial Policy
+                </a>
               </li>
             </ul>
-          </div>
+          </nav>
 
-          {/* Featured Case Studies */}
-          <div>
-            <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-[#FF7A00] mb-3">
-              Essential Reads
-            </h4>
+          {/* Featured Case Studies with Rich Anchor Text (Requirement 6) */}
+          <nav aria-label="Footer Case Studies">
+            <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-[#FF7A00] mb-3">
+              Essential Case Studies
+            </h3>
             <ul className="space-y-2 text-xs text-white/80 font-body">
               <li>
-                <button
-                  onClick={() => onSelectStory('zerodha')}
-                  className="hover:text-white transition-colors text-left"
+                <a
+                  href="/startup-stories/zerodha"
+                  onClick={(e) => handleLinkClick(e, '/startup-stories/zerodha')}
+                  className="hover:text-white transition-colors block"
+                  title="Read Zerodha Bootstrapped FinTech Story"
                 >
-                  Zerodha: The Bootstrapped Broking Giant
-                </button>
+                  Zerodha: Bootstrapped Broking Giant
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onSelectStory('zomato')}
-                  className="hover:text-white transition-colors text-left"
+                <a
+                  href="/startup-stories/zomato"
+                  onClick={(e) => handleLinkClick(e, '/startup-stories/zomato')}
+                  className="hover:text-white transition-colors block"
+                  title="Read Zomato Food Delivery Story"
                 >
                   Zomato: From Foodiebay to Blinkit
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onSelectStory('nykaa')}
-                  className="hover:text-white transition-colors text-left"
+                <a
+                  href="/startup-stories/nykaa"
+                  onClick={(e) => handleLinkClick(e, '/startup-stories/nykaa')}
+                  className="hover:text-white transition-colors block"
+                  title="Read Nykaa Omnichannel Beauty Story"
                 >
                   Nykaa: Content-to-Commerce Beauty
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onSelectStory('physics-wallah')}
-                  className="hover:text-white transition-colors text-left"
+                <a
+                  href="/startup-stories/physics-wallah"
+                  onClick={(e) => handleLinkClick(e, '/startup-stories/physics-wallah')}
+                  className="hover:text-white transition-colors block"
+                  title="Read Physics Wallah Affordable EdTech Story"
                 >
                   Physics Wallah: Affordable EdTech
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onSelectStory('cred')}
-                  className="hover:text-white transition-colors text-left"
+                <a
+                  href="/startup-stories/cred"
+                  onClick={(e) => handleLinkClick(e, '/startup-stories/cred')}
+                  className="hover:text-white transition-colors block"
+                  title="Read CRED High-Trust Fintech Story"
                 >
                   CRED: Branding as the Product
-                </button>
+                </a>
               </li>
             </ul>
-          </div>
+          </nav>
 
-          {/* Social Channels per Section 23 */}
+          {/* Community & Media Channels */}
           <div>
-            <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-[#FF7A00] mb-3">
-              Community & Media
-            </h4>
+            <h3 className="font-mono text-xs font-bold uppercase tracking-wider text-[#FF7A00] mb-3">
+              Community & Academic Media
+            </h3>
             <ul className="space-y-2 text-xs text-white/80 font-body">
               <li>
                 <span className="text-white/60">LinkedIn:</span>{' '}
-                <span className="hover:text-[#FF7A00] cursor-pointer">@IndianStartupStories</span>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF7A00] transition-colors">
+                  @IndianStartupStories
+                </a>
               </li>
               <li>
                 <span className="text-white/60">YouTube:</span>{' '}
-                <span className="hover:text-[#FF7A00] cursor-pointer">/c/IndianStartupStories</span>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF7A00] transition-colors">
+                  /c/IndianStartupStories
+                </a>
               </li>
               <li>
                 <span className="text-white/60">Instagram:</span>{' '}
-                <span className="hover:text-[#FF7A00] cursor-pointer">@indianstartupstories.in</span>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF7A00] transition-colors">
+                  @indianstartupstories.in
+                </a>
               </li>
               <li>
                 <span className="text-white/60">Academic Inquiries:</span>{' '}
-                <span className="text-white">editor@indianstartupstories.com</span>
+                <span className="text-white font-mono text-[11px]">editor@indianstartupstories.com</span>
               </li>
             </ul>
 
             <div className="mt-4 pt-3 border-t border-white/10 text-[11px] text-white/60 font-body">
-              Designed for BBA, MBA, and undergraduate entrepreneurship cells across India.
+              Curated for BBA, MBA, and undergraduate entrepreneurship cells across India.
             </div>
           </div>
 
@@ -196,16 +236,26 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onSelectStory }) =>
           </div>
 
           <div className="flex items-center gap-6">
-            <button onClick={() => onSelectTab('about')} className="hover:text-white">
+            <a
+              href="/about"
+              onClick={(e) => handleLinkClick(e, '/about')}
+              className="hover:text-white transition-colors"
+              title="Review Our Editorial Verification Policy"
+            >
               Editorial Policy
-            </button>
+            </a>
             <span>·</span>
-            <button onClick={() => onSelectTab('funding')} className="hover:text-white">
+            <a
+              href="/funding"
+              onClick={(e) => handleLinkClick(e, '/funding')}
+              className="hover:text-white transition-colors"
+              title="Review Sourcing Methodology for Funding"
+            >
               Sourcing Methodology
-            </button>
+            </a>
             <span>·</span>
             <span className="flex items-center gap-1">
-              Built for Indian Founders <Heart className="w-3 h-3 text-[#FF7A00] fill-[#FF7A00]" />
+              Documenting Indian Founders <Heart className="w-3 h-3 text-[#FF7A00] fill-[#FF7A00]" />
             </span>
           </div>
         </div>

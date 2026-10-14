@@ -1,9 +1,9 @@
 import React from 'react';
-import { ShieldCheck, CheckCircle2, BookOpen, Award, Users, Compass } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, Users, Compass } from 'lucide-react';
 
 export const AboutPage: React.FC = () => {
   return (
-    <section className="py-14 bg-[#F7F5F0] min-h-screen">
+    <section aria-labelledby="about-heading" className="py-14 bg-[#F7F5F0] min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Page Kicker */}
@@ -11,7 +11,7 @@ export const AboutPage: React.FC = () => {
           MANIFESTO & INSTITUTIONAL STANDARDS
         </div>
 
-        <h1 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#0B1F3A] leading-tight tracking-tight">
+        <h1 id="about-heading" className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#0B1F3A] leading-tight tracking-tight">
           About Indian Startup Stories
         </h1>
 
@@ -19,19 +19,20 @@ export const AboutPage: React.FC = () => {
           Real Founders. Real Journeys. Real Stories.
         </p>
 
-        {/* Section 19: Our Mission (Faithfully implemented word for word) */}
+        {/* Section 19: Our Mission in Question-Answer Format (AEO) */}
         <div className="mt-10 bg-white rounded-xl border border-[#0B1F3A]/15 p-6 sm:p-10 shadow-xs">
           <div className="flex items-center gap-2 pb-3 border-b border-[#0B1F3A]/10 mb-6">
             <Compass className="w-5 h-5 text-[#0B1F3A]" />
-            <h2 className="font-display font-bold text-xl text-[#0B1F3A]">
-              Our Mission
+            <h2 className="font-display font-bold text-xl sm:text-2xl text-[#0B1F3A]">
+              What Is the Mission and Core Purpose of Indian Startup Stories?
             </h2>
           </div>
 
+          <div className="p-4 bg-amber-50/80 border-l-3 border-[#FF7A00] rounded-r-lg text-xs sm:text-sm text-[#0B1F3A] font-medium leading-relaxed font-body mb-6">
+            <strong>Direct Answer:</strong> Indian Startup Stories exists to document the authentic people, ideas, and decisions behind India's startup ecosystem. We believe startup stories should be more than superficial success headlines—they must explain the real unit economics, experiments, and lessons for aspiring builders.
+          </div>
+
           <div className="space-y-4 text-base sm:text-lg text-[#171717]/85 font-body leading-relaxed">
-            <p>
-              Indian Startup Stories exists to document the people, ideas and decisions behind India's startup ecosystem.
-            </p>
             <p>
               We believe that startup stories should be more than success headlines.
             </p>
@@ -72,13 +73,17 @@ export const AboutPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Section 20: Editorial Policy (Faithfully implemented word for word) */}
+        {/* Section 20: Editorial Policy in Question-Answer Format (AEO) */}
         <div className="mt-10 bg-white rounded-xl border border-[#0B1F3A]/15 p-6 sm:p-10 shadow-xs">
           <div className="flex items-center gap-2 pb-3 border-b border-[#0B1F3A]/10 mb-6">
             <ShieldCheck className="w-5 h-5 text-[#138A4B]" />
-            <h2 className="font-display font-bold text-xl text-[#0B1F3A]">
-              Editorial Policy
+            <h2 className="font-display font-bold text-xl sm:text-2xl text-[#0B1F3A]">
+              What Are Our Five Core Editorial Verification Principles?
             </h2>
+          </div>
+
+          <div className="p-4 bg-amber-50/80 border-l-3 border-[#FF7A00] rounded-r-lg text-xs sm:text-sm text-[#0B1F3A] font-medium leading-relaxed font-body mb-6">
+            <strong>Direct Answer:</strong> We follow a strict verification charter: We verify all numbers against MCA/SEBI statutory filings; We cite primary and independent sources on every article; We update time-sensitive data; We distinguish audited facts from promotional marketing claims; and We issue immediate public corrections if any factual error occurs.
           </div>
 
           <p className="font-display font-bold text-base text-[#0B1F3A] mb-6">

@@ -4,7 +4,7 @@ import { STARTUP_STORIES, StartupArticle } from '../data/startups';
 import { StoryCard } from './StoryCard';
 
 interface StoryGridProps {
-  onSelectStory: (slug: string) => void;
+  onNavigate: (path: string) => void;
   selectedIndustryFilter?: string | null;
   onClearFilter?: () => void;
   savedSlugs?: string[];
@@ -12,7 +12,7 @@ interface StoryGridProps {
 }
 
 export const StoryGrid: React.FC<StoryGridProps> = ({
-  onSelectStory,
+  onNavigate,
   selectedIndustryFilter,
   onClearFilter,
   savedSlugs = [],
@@ -72,27 +72,26 @@ export const StoryGrid: React.FC<StoryGridProps> = ({
   }, [activeCategory, selectedIndustryFilter, searchQuery, sortBy]);
 
   return (
-    <section className="py-12 bg-[#F7F5F0]">
+    <section aria-labelledby="stories-archive-heading" className="py-12 bg-[#F7F5F0]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-[#0B1F3A]/10 gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-[#FF7A00] mb-1">
-              <BookOpen className="w-4 h-4 text-[#FF7A00]" />
-              <span>THE 10 LAUNCH CASE STUDIES</span>
-            </div>
-            <h2 className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl text-[#0B1F3A]">
-              Startup Stories
-            </h2>
+        {/* Section Header with Question-Answer Format for AEO */}
+        <div className="mb-8 pb-4 border-b border-[#0B1F3A]/10">
+          <div className="flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-[#FF7A00] mb-2">
+            <BookOpen className="w-4 h-4 text-[#FF7A00]" />
+            <span>THE 10 LAUNCH CASE STUDIES</span>
           </div>
 
-          <div className="text-xs text-[#171717]/70 font-mono">
-            Showing <strong className="text-[#0B1F3A]">{filteredStories.length}</strong> of 10 stories
+          <h2 id="stories-archive-heading" className="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl text-[#0B1F3A]">
+            What Are the 10 Landmark Case Studies Shaping Indian Entrepreneurship?
+          </h2>
+
+          <div className="mt-3 p-4 bg-amber-50/80 border-l-3 border-[#FF7A00] rounded-r-lg text-xs sm:text-sm text-[#0B1F3A] font-medium leading-relaxed font-body max-w-4xl">
+            <strong>Direct Answer:</strong> The 10 verified startup case studies document Zerodha (bootstrapped stockbroking), Zomato (restaurant discovery to quick commerce), Nykaa (omnichannel beauty), boAt (youth D2C audio), Razorpay (digital payments infrastructure), Meesho (social commerce for Bharat), Swiggy (hyperlocal delivery network), Physics Wallah (affordable EdTech), OYO (budget hospitality tech), and CRED (brand-led fintech).
           </div>
         </div>
 
-        {/* Filter Controls Bar (Interactive tabs compliant with Frontend Constitution) */}
+        {/* Filter Controls Bar */}
         <div className="bg-white p-4 rounded-xl border border-[#0B1F3A]/10 mb-8 space-y-4 shadow-xs">
           
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
@@ -174,7 +173,7 @@ export const StoryGrid: React.FC<StoryGridProps> = ({
               <StoryCard
                 key={story.id}
                 story={story}
-                onSelectStory={onSelectStory}
+                onNavigate={onNavigate}
                 isBookmarked={savedSlugs.includes(story.slug)}
                 onToggleBookmark={onToggleBookmark}
               />

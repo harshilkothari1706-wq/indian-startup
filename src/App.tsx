@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Header, ActiveTab } from './components/Header';
+import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { FeaturedStory } from './components/FeaturedStory';
 import { StartupStats } from './components/StartupStats';
@@ -19,13 +19,16 @@ import { AboutPage } from './components/AboutPage';
 import { SearchModal } from './components/SearchModal';
 import { NewsletterSection } from './components/NewsletterSection';
 import { Footer } from './components/Footer';
+import { SEOHead } from './components/SEOHead';
 import { STARTUP_STORIES, StartupArticle } from './data/startups';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('home');
-  const [activeStorySlug, setActiveStorySlug] = useState<string | null>(null);
+  // Normalize current pathname
+  const [currentPath, setCurrentPath] = useState<string>(() => {
+    return window.location.pathname || '/';
+  });
+
   const [searchModalOpen, setSearchModalOpen] = useState(false);
-  const [industryFilter, setIndustryFilter] = useState<string | null>(null);
   const [savedSlugs, setSavedSlugs] = useState<string[]>(() => {
     try {
       const stored = localStorage.getItem('iss_bookmarks');
@@ -35,7 +38,16 @@ export default function App() {
     }
   });
 
-  // Save bookmarks to localStorage
+  // Listen to browser Back/Forward (popstate)
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname || '/');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Sync bookmarks to localStorage
   useEffect(() => {
     try {
       localStorage.setItem('iss_bookmarks', JSON.stringify(savedSlugs));
@@ -44,7 +56,7 @@ export default function App() {
     }
   }, [savedSlugs]);
 
-  // Handle global keyboard shortcut for Search (Cmd+K / Ctrl+K)
+  // Global keyboard shortcut for Search (Cmd+K / Ctrl+K)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -56,143 +68,117 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Primary Navigation Dispatcher (updates URL via pushState)
+  const navigateTo = (path: string) => {
+    if (window.location.pathname !== path) {
+      window.history.pushState({}, '', path);
+    }
+    setCurrentPath(path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const toggleBookmark = (slug: string) => {
     setSavedSlugs((prev) =>
       prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]
     );
   };
 
-  const handleSelectStory = (slug: string) => {
-    setActiveStorySlug(slug);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  // Determine active view based on currentPath
+  let activeStory: StartupArticle | undefined = undefined;
+  let selectedIndustry: string | null = null;
 
-  const handleBackFromStory = () => {
-    setActiveStorySlug(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  if (currentPath.startsWith('/startup-stories/')) {
+    const slug = currentPath.replace('/startup-stories/', '').split('?')[0].split('/')[0];
+    activeStory = STARTUP_STORIES.find((s) => s.slug === slug);
+  }
 
-  const handleSelectIndustry = (industryId: string) => {
-    setIndustryFilter(industryId);
-    setActiveTab('stories');
-    setActiveStorySlug(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const currentStory: StartupArticle | undefined = activeStorySlug
-    ? STARTUP_STORIES.find((s) => s.slug === activeStorySlug)
-    : undefined;
+  // Parse industry filter from search params if present
+  try {
+    const params = new URLSearchParams(window.location.search);
+    selectedIndustry = params.get('industry');
+  } catch {
+    selectedIndustry = null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F7F5F0] text-[#171717] selection:bg-[#FF7A00]/20 selection:text-[#0B1F3A]">
       
+      {/* Dynamic SEO Head Manager (Title, Meta Description, Keywords, OpenGraph, JSON-LD) */}
+      <SEOHead currentPath={currentPath} />
+
       {/* Top Header Contract */}
       <Header
-        activeTab={activeStorySlug ? 'stories' : activeTab}
-        onSelectTab={(tab) => {
-          setActiveTab(tab);
-          setActiveStorySlug(null);
-        }}
+        currentPath={currentPath}
+        onNavigate={navigateTo}
         onOpenSearch={() => setSearchModalOpen(true)}
         savedCount={savedSlugs.length}
-        onOpenSaved={() => {
-          setActiveTab('stories');
-          setActiveStorySlug(null);
-        }}
+        onOpenSaved={() => navigateTo('/startup-stories')}
       />
 
       {/* Main Content Area */}
       <main className="flex-1">
-        {/* If viewing a single story, render ArticleView */}
-        {activeStorySlug && currentStory ? (
+        
+        {/* If route matches /startup-stories/:slug and story exists */}
+        {activeStory ? (
           <ArticleView
-            story={currentStory}
-            onBack={handleBackFromStory}
-            onSelectStory={handleSelectStory}
-            isBookmarked={savedSlugs.includes(currentStory.slug)}
+            story={activeStory}
+            onNavigate={navigateTo}
+            isBookmarked={savedSlugs.includes(activeStory.slug)}
             onToggleBookmark={toggleBookmark}
           />
+        ) : currentPath === '/startup-stories' ? (
+          <StoryGrid
+            onNavigate={navigateTo}
+            selectedIndustryFilter={selectedIndustry}
+            onClearFilter={() => navigateTo('/startup-stories')}
+            savedSlugs={savedSlugs}
+            onToggleBookmark={toggleBookmark}
+          />
+        ) : currentPath === '/founders' ? (
+          <FounderDirectory onNavigate={navigateTo} />
+        ) : currentPath === '/industries' ? (
+          <div className="py-6">
+            <ExploreIndustries onNavigate={navigateTo} />
+            <StoryGrid
+              onNavigate={navigateTo}
+              selectedIndustryFilter={selectedIndustry}
+              onClearFilter={() => navigateTo('/industries')}
+              savedSlugs={savedSlugs}
+              onToggleBookmark={toggleBookmark}
+            />
+          </div>
+        ) : currentPath === '/marketing' ? (
+          <MarketingPage onNavigate={navigateTo} />
+        ) : currentPath === '/funding' ? (
+          <FundingPage onNavigate={navigateTo} />
+        ) : currentPath === '/failure-stories' ? (
+          <FailureStoriesPage />
+        ) : currentPath === '/about' ? (
+          <AboutPage />
         ) : (
+          /* Default: Home Page (/) */
           <>
-            {/* View Switching based on activeTab */}
-            {activeTab === 'home' && (
-              <>
-                {/* 1. Hero Section */}
-                <Hero
-                  onExploreStories={() => {
-                    setActiveTab('stories');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  onMeetFounders={() => {
-                    setActiveTab('founders');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  onSelectStory={handleSelectStory}
-                />
+            {/* 1. Hero Section */}
+            <Hero onNavigate={navigateTo} />
 
-                {/* 2. Featured Story (Zerodha) */}
-                <FeaturedStory onSelectStory={handleSelectStory} />
+            {/* 2. Featured Story (Zerodha) */}
+            <FeaturedStory onNavigate={navigateTo} />
 
-                {/* 3. 10 Startup Stories Grid */}
-                <StoryGrid
-                  onSelectStory={handleSelectStory}
-                  savedSlugs={savedSlugs}
-                  onToggleBookmark={toggleBookmark}
-                />
+            {/* 3. 10 Startup Stories Grid */}
+            <StoryGrid
+              onNavigate={navigateTo}
+              savedSlugs={savedSlugs}
+              onToggleBookmark={toggleBookmark}
+            />
 
-                {/* 4. Explore Industries (8 visual category cards) */}
-                <ExploreIndustries onSelectIndustry={handleSelectIndustry} />
+            {/* 4. Explore Industries (8 visual category cards) */}
+            <ExploreIndustries onNavigate={navigateTo} />
 
-                {/* 5. Meet the Founders */}
-                <FounderDirectory onSelectStory={handleSelectStory} />
+            {/* 5. Meet the Founders */}
+            <FounderDirectory onNavigate={navigateTo} />
 
-                {/* 6. India's Startup Ecosystem (Visual Statistics) */}
-                <StartupStats />
-              </>
-            )}
-
-            {activeTab === 'stories' && (
-              <StoryGrid
-                onSelectStory={handleSelectStory}
-                selectedIndustryFilter={industryFilter}
-                onClearFilter={() => setIndustryFilter(null)}
-                savedSlugs={savedSlugs}
-                onToggleBookmark={toggleBookmark}
-              />
-            )}
-
-            {activeTab === 'founders' && (
-              <FounderDirectory onSelectStory={handleSelectStory} />
-            )}
-
-            {activeTab === 'industries' && (
-              <div className="py-6">
-                <ExploreIndustries onSelectIndustry={handleSelectIndustry} />
-                <StoryGrid
-                  onSelectStory={handleSelectStory}
-                  selectedIndustryFilter={industryFilter}
-                  onClearFilter={() => setIndustryFilter(null)}
-                  savedSlugs={savedSlugs}
-                  onToggleBookmark={toggleBookmark}
-                />
-              </div>
-            )}
-
-            {activeTab === 'marketing' && (
-              <MarketingPage onSelectStory={handleSelectStory} />
-            )}
-
-            {activeTab === 'funding' && (
-              <FundingPage onSelectStory={handleSelectStory} />
-            )}
-
-            {activeTab === 'failures' && (
-              <FailureStoriesPage />
-            )}
-
-            {activeTab === 'about' && (
-              <AboutPage />
-            )}
+            {/* 6. India's Startup Ecosystem (Visual Statistics) */}
+            <StartupStats />
           </>
         )}
 
@@ -200,22 +186,14 @@ export default function App() {
         <NewsletterSection />
       </main>
 
-      {/* Global Footer */}
-      <Footer
-        onSelectTab={(tab) => {
-          setActiveTab(tab);
-          setActiveStorySlug(null);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        onSelectStory={handleSelectStory}
-      />
+      {/* Global Footer with Semantic Anchor Links */}
+      <Footer onNavigate={navigateTo} />
 
-      {/* Interactive Global Search Modal */}
+      {/* Global Instant Search Modal */}
       <SearchModal
         isOpen={searchModalOpen}
         onClose={() => setSearchModalOpen(false)}
-        onSelectStory={handleSelectStory}
-        onSelectIndustry={handleSelectIndustry}
+        onNavigate={navigateTo}
       />
 
     </div>

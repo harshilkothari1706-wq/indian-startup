@@ -6,36 +6,35 @@ import {
   User,
   ShieldCheck,
   Bookmark,
-  Share2,
   Check,
   Building,
-  MapPin,
-  TrendingUp,
   FileText,
-  ExternalLink,
   ChevronRight,
-  BookOpen,
+  HelpCircle,
+  Sparkles,
 } from 'lucide-react';
 import { StartupArticle, STARTUP_STORIES } from '../data/startups';
+import { SEO_REGISTRY } from '../data/seoRegistry';
 
 interface ArticleViewProps {
   story: StartupArticle;
-  onBack: () => void;
-  onSelectStory: (slug: string) => void;
+  onNavigate: (path: string) => void;
   isBookmarked?: boolean;
   onToggleBookmark?: (slug: string) => void;
 }
 
 export const ArticleView: React.FC<ArticleViewProps> = ({
   story,
-  onBack,
-  onSelectStory,
+  onNavigate,
   isBookmarked = false,
   onToggleBookmark,
 }) => {
   const [copiedCitation, setCopiedCitation] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [fontSize, setFontSize] = useState<'normal' | 'large'>('normal');
+
+  const pagePath = `/startup-stories/${story.slug}`;
+  const seoData = SEO_REGISTRY[pagePath];
 
   // Track reading progress
   useEffect(() => {
@@ -52,13 +51,19 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
   }, []);
 
   const handleCopyCitation = () => {
-    const citation = `${story.author}. (${story.publishedDate.split(' ').pop()}). "${story.title}." Indian Startup Stories. Retrieved from https://indianstartupstories.com/startup-stories/${story.slug}`;
+    const citation = `${story.author}. (${story.publishedDate.split(' ').pop()}). "${story.title}." Indian Startup Stories. Retrieved from ${window.location.origin}${pagePath}`;
     navigator.clipboard.writeText(citation);
     setCopiedCitation(true);
     setTimeout(() => setCopiedCitation(false), 2500);
   };
 
   const relatedStories = STARTUP_STORIES.filter((s) => s.id !== story.id).slice(0, 3);
+
+  // Link click handler with history push
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, targetPath: string) => {
+    e.preventDefault();
+    onNavigate(targetPath);
+  };
 
   return (
     <article className="min-h-screen bg-[#F7F5F0] pb-20">
@@ -71,17 +76,21 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
         />
       </div>
 
-      {/* Floating Reading Utility Bar on Mobile/Desktop */}
+      {/* Floating Reading Utility Bar */}
       <div className="sticky top-18 z-30 bg-[#F7F5F0]/90 backdrop-blur-md border-b border-[#0B1F3A]/10 py-2.5 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
           
-          <button
-            onClick={onBack}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0B1F3A] hover:text-[#FF7A00] transition-colors focus:outline-none"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>All Startup Stories</span>
-          </button>
+          {/* Breadcrumb Navigation with Descriptive Anchor Text */}
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs font-semibold">
+            <a
+              href="/startup-stories"
+              onClick={(e) => handleLinkClick(e, '/startup-stories')}
+              className="text-[#0B1F3A] hover:text-[#FF7A00] transition-colors flex items-center gap-1"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Startup Stories Directory</span>
+            </a>
+          </nav>
 
           <div className="flex items-center gap-3">
             {/* Font Size Toggle */}
@@ -91,7 +100,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
                 className={`px-2 py-0.5 rounded font-mono ${
                   fontSize === 'normal' ? 'bg-[#0B1F3A] text-white font-bold' : 'text-[#171717]/60'
                 }`}
-                title="Normal text size"
+                title="Default reading font size"
               >
                 A
               </button>
@@ -100,27 +109,27 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
                 className={`px-2 py-0.5 rounded font-mono text-sm ${
                   fontSize === 'large' ? 'bg-[#0B1F3A] text-white font-bold' : 'text-[#171717]/60'
                 }`}
-                title="Larger text size"
+                title="Enlarge reading font size"
               >
                 A+
               </button>
             </div>
 
-            {/* Citation Copy Button */}
+            {/* Academic Citation Copy */}
             <button
               onClick={handleCopyCitation}
               className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-[#0B1F3A] bg-white border border-[#0B1F3A]/15 hover:border-[#0B1F3A] rounded-md transition-colors"
-              title="Copy academic citation"
+              title="Copy academic citation format"
             >
               {copiedCitation ? (
                 <>
                   <Check className="w-3.5 h-3.5 text-[#138A4B]" />
-                  <span className="text-[#138A4B]">Copied!</span>
+                  <span className="text-[#138A4B]">Citation Copied</span>
                 </>
               ) : (
                 <>
                   <FileText className="w-3.5 h-3.5 text-[#0B1F3A]/70" />
-                  <span className="hidden sm:inline">Cite Article</span>
+                  <span className="hidden sm:inline">Cite Case Study</span>
                 </>
               )}
             </button>
@@ -134,7 +143,8 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
                     ? 'bg-[#FF7A00]/10 border-[#FF7A00] text-[#FF7A00]'
                     : 'bg-white border-[#0B1F3A]/15 text-[#171717]/70 hover:text-[#0B1F3A]'
                 }`}
-                title={isBookmarked ? 'Bookmarked' : 'Bookmark this story'}
+                title={isBookmarked ? 'Saved to bookmarks' : 'Bookmark this case study'}
+                aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark article'}
               >
                 <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-[#FF7A00]' : ''}`} />
               </button>
@@ -150,12 +160,20 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
         {/* Header Section per Section 11 Specification */}
         <header className="mb-8">
           
-          {/* CATEGORY (Unboxed uppercase kicker) */}
-          <div className="text-xs font-mono font-bold tracking-widest text-[#FF7A00] uppercase mb-3">
-            {story.category} · EDITORIAL ESSAY
+          {/* CATEGORY (Unboxed uppercase kicker with anchor text to industry) */}
+          <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-widest text-[#FF7A00] uppercase mb-3">
+            <a
+              href="/industries"
+              onClick={(e) => handleLinkClick(e, '/industries')}
+              className="hover:underline"
+            >
+              {story.category} Sector Case Study
+            </a>
+            <span aria-hidden="true">·</span>
+            <span>Verified Long-Form Analysis</span>
           </div>
 
-          {/* BIG BLOG HEADLINE */}
+          {/* BIG BLOG HEADLINE (H1) */}
           <h1 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-[#0B1F3A] leading-[1.15] tracking-tight text-balance">
             {story.title}
           </h1>
@@ -194,55 +212,75 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
             </div>
           </div>
 
+          {/* SEO Keyword Indicators */}
+          {seoData && (
+            <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-[#171717]/60 font-mono">
+              <span>Main Topic: <strong className="text-[#0B1F3A]">{seoData.mainKeyword}</strong></span>
+              <span aria-hidden="true">·</span>
+              <span>Related: {seoData.relatedKeywords.join(', ')}</span>
+            </div>
+          )}
+
         </header>
 
-        {/* IMAGE 1 — HERO: Company/Founder (Section 12) */}
-        <div className="mb-8 rounded-xl overflow-hidden border border-[#0B1F3A]/15 shadow-sm bg-white">
+        {/* IMAGE 1 — HERO: Small payload SVG vector banner with explicit alt text (Section 5 & 12) */}
+        <figure className="mb-8 rounded-xl overflow-hidden border border-[#0B1F3A]/15 shadow-sm bg-white">
           <div
-            className={`w-full min-h-[340px] sm:min-h-[420px] bg-gradient-to-br ${story.images.hero.fallbackGradient} p-8 flex flex-col justify-between text-white relative`}
+            className={`w-full h-64 sm:h-80 bg-gradient-to-br ${story.images.hero.fallbackGradient} p-6 sm:p-8 flex flex-col justify-between text-white relative`}
+            role="img"
+            aria-label={`${story.title} - Official editorial illustration representing ${story.id.toUpperCase()}`}
           >
-            {/* Subtle background tech matrix */}
-            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px]" />
+            {/* Lightweight inlined SVG vector asset (small payload < 2KB, no external delay) */}
+            <svg
+              className="absolute inset-0 w-full h-full opacity-15 pointer-events-none"
+              preserveAspectRatio="none"
+              viewBox="0 0 100 100"
+              aria-hidden="true"
+            >
+              <line x1="0" y1="20" x2="100" y2="80" stroke="#FFFFFF" strokeWidth="0.5" />
+              <line x1="0" y1="80" x2="100" y2="20" stroke="#FF7A00" strokeWidth="0.5" />
+              <circle cx="50" cy="50" r="30" stroke="#138A4B" strokeWidth="0.5" fill="none" />
+            </svg>
 
             <div className="relative z-10 flex items-center justify-between">
               <span className="text-[11px] font-mono tracking-widest bg-black/40 text-[#FF7A00] font-bold px-3 py-1 rounded">
                 FIG. 1 · {story.images.hero.badgeText}
               </span>
               <span className="text-xs font-mono text-white/80">
-                {story.quickFacts.headquarters}
+                HQ: {story.quickFacts.headquarters}
               </span>
             </div>
 
-            <div className="relative z-10 my-auto text-center py-8">
-              <div className="font-display font-black text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight">
+            <div className="relative z-10 my-auto text-center py-4">
+              <div className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight">
                 {story.id.toUpperCase()}
               </div>
-              <p className="font-display font-medium text-base sm:text-lg text-white/90 mt-2 max-w-lg mx-auto">
+              <p className="font-display font-medium text-sm sm:text-base text-white/90 mt-1 max-w-lg mx-auto">
                 {story.images.hero.title}
               </p>
             </div>
 
-            <div className="relative z-10 flex items-center justify-between text-xs text-white/70 border-t border-white/10 pt-3">
-              <span>{story.category} Case Study</span>
-              <span className="font-mono">Est. {story.quickFacts.founded}</span>
+            <div className="relative z-10 flex items-center justify-between text-xs text-white/70 border-t border-white/10 pt-2">
+              <span>{story.category} Architecture</span>
+              <span className="font-mono">Established {story.quickFacts.founded}</span>
             </div>
           </div>
 
           {/* Mandatory Image Caption & Credit (Section 12 requirement) */}
-          <div className="p-3 bg-[#F2ECE1] border-t border-[#0B1F3A]/10 text-xs text-[#171717]/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+          <figcaption className="p-3 bg-[#F2ECE1] border-t border-[#0B1F3A]/10 text-xs text-[#171717]/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
             <span>{story.images.hero.caption}</span>
             <span className="font-mono text-[11px] text-[#0B1F3A] font-semibold shrink-0">
               Image credit: {story.images.hero.credit}
             </span>
-          </div>
-        </div>
+          </figcaption>
+        </figure>
 
-        {/* QUICK FACTS BAR (Section 11 requirement) */}
-        <section className="bg-white rounded-xl border border-[#0B1F3A]/15 p-6 mb-10 shadow-xs">
+        {/* QUICK FACTS BAR */}
+        <section aria-labelledby="quick-facts-heading" className="bg-white rounded-xl border border-[#0B1F3A]/15 p-6 mb-10 shadow-xs">
           <div className="flex items-center gap-2 mb-4 pb-2 border-b border-[#0B1F3A]/10">
             <Building className="w-4 h-4 text-[#FF7A00]" />
-            <h2 className="text-xs font-bold tracking-widest uppercase text-[#0B1F3A]">
-              QUICK FACTS
+            <h2 id="quick-facts-heading" className="text-xs font-bold tracking-widest uppercase text-[#0B1F3A]">
+              QUICK FACTS & CORPORATE OVERVIEW
             </h2>
           </div>
 
@@ -292,7 +330,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
         </section>
 
         {/* TRUST & VERIFICATION SYSTEM BOX (Section 13 requirement) */}
-        <div className="mb-10 bg-emerald-50/60 border border-[#138A4B]/30 rounded-xl p-5 shadow-xs">
+        <aside aria-label="Editorial Verification Box" className="mb-10 bg-emerald-50/60 border border-[#138A4B]/30 rounded-xl p-5 shadow-xs">
           <div className="flex items-center gap-2 mb-2">
             <span className="w-3 h-3 rounded-full bg-[#138A4B] animate-pulse" />
             <h3 className="font-display font-bold text-sm text-[#138A4B] uppercase tracking-wider">
@@ -305,16 +343,16 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
           <div className="mt-2 text-[11px] font-mono text-[#138A4B]">
             Status: Fully Verified as of {story.editorial.lastVerifiedDate}
           </div>
-        </div>
+        </aside>
 
-        {/* ARTICLE CONTENT (Structured per Section 11 & domain guidelines) */}
+        {/* ARTICLE CONTENT (Structured in Question-Answer Format for AEO & AI Overviews) */}
         <div
-          className={`space-y-8 font-body leading-relaxed text-[#171717] ${
+          className={`space-y-10 font-body leading-relaxed text-[#171717] ${
             fontSize === 'large' ? 'text-lg leading-loose' : 'text-base'
           }`}
         >
           
-          {/* Introduction with drop cap */}
+          {/* Executive Overview */}
           <section className="space-y-4">
             {story.content.introduction.map((paragraph, idx) => (
               <p
@@ -330,20 +368,28 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
             ))}
           </section>
 
-          {/* The Beginning */}
-          <section className="pt-4 border-t border-[#0B1F3A]/10 space-y-4">
+          {/* Section 1: H2 in Question-Answer Format (AEO) */}
+          <section className="pt-6 border-t border-[#0B1F3A]/10 space-y-4">
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B1F3A]">
-              The Beginning
+              How Did {story.id.toUpperCase()} Start and Who Are the Founders Behind It?
             </h2>
+
+            {/* Direct Answer Paragraph for AI Overviews / Snippets */}
+            <div className="p-4 bg-amber-50/80 border-l-3 border-[#FF7A00] rounded-r-lg text-xs sm:text-sm text-[#0B1F3A] font-medium leading-relaxed">
+              <strong>Direct Answer:</strong> {story.id.toUpperCase()} was founded in {story.quickFacts.founded} by {story.quickFacts.founders} in {story.quickFacts.headquarters}. It originated from real operational friction in the Indian market, building a sustainable advantage through technology and customer-first alignment.
+            </div>
+
             {story.content.beginning.map((paragraph, idx) => (
               <p key={idx}>{paragraph}</p>
             ))}
           </section>
 
-          {/* IMAGE 2 — FOUNDER PORTRAIT (Section 12) */}
-          <div className="my-8 rounded-xl overflow-hidden border border-[#0B1F3A]/15 bg-white shadow-xs">
+          {/* IMAGE 2 — FOUNDER PORTRAIT (Small Payload with Alt Text) */}
+          <figure className="my-8 rounded-xl overflow-hidden border border-[#0B1F3A]/15 bg-white shadow-xs">
             <div
-              className={`w-full min-h-[260px] bg-gradient-to-r ${story.images.founder.fallbackGradient} p-6 sm:p-8 flex flex-col justify-between text-white relative`}
+              className={`w-full h-56 sm:h-64 bg-gradient-to-r ${story.images.founder.fallbackGradient} p-6 sm:p-8 flex flex-col justify-between text-white relative`}
+              role="img"
+              aria-label={`Portrait visual of ${story.quickFacts.founders}, founders of ${story.id.toUpperCase()}`}
             >
               <div className="relative z-10 flex items-center justify-between">
                 <span className="text-[11px] font-mono bg-black/40 text-[#FF7A00] font-bold px-2.5 py-0.5 rounded">
@@ -352,8 +398,8 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
                 <span className="text-xs font-mono text-white/70">AUTHORIZED PORTRAIT</span>
               </div>
 
-              <div className="relative z-10 my-4">
-                <h3 className="font-display font-bold text-2xl sm:text-3xl text-white">
+              <div className="relative z-10 my-2">
+                <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
                   {story.images.founder.title}
                 </h3>
                 <p className="text-xs text-white/80 mt-1 max-w-lg">
@@ -362,24 +408,29 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
               </div>
 
               <div className="relative z-10 text-[11px] text-white/60 font-mono pt-2 border-t border-white/10">
-                Authorized Corporate Archive Archive Photo
+                Corporate Media Room Archive
               </div>
             </div>
 
-            <div className="p-3 bg-[#F2ECE1] border-t border-[#0B1F3A]/10 text-xs text-[#171717]/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <figcaption className="p-3 bg-[#F2ECE1] border-t border-[#0B1F3A]/10 text-xs text-[#171717]/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
               <span>{story.images.founder.caption}</span>
               <span className="font-mono text-[11px] text-[#0B1F3A] font-semibold shrink-0">
                 Image credit: {story.images.founder.credit}
               </span>
-            </div>
-          </div>
+            </figcaption>
+          </figure>
 
-          {/* The Problem */}
-          <section className="pt-4 border-t border-[#0B1F3A]/10 space-y-4">
+          {/* Section 2: H2 in Question-Answer Format (AEO) */}
+          <section className="pt-6 border-t border-[#0B1F3A]/10 space-y-4">
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B1F3A]">
-              The Problem
+              What Core Problem in the Indian Market Did {story.id.toUpperCase()} Solve?
             </h2>
-            <p className="font-medium text-[#0B1F3A]">{story.content.problem.text}</p>
+
+            {/* Direct Answer Paragraph */}
+            <div className="p-4 bg-amber-50/80 border-l-3 border-[#FF7A00] rounded-r-lg text-xs sm:text-sm text-[#0B1F3A] font-medium leading-relaxed">
+              <strong>Direct Answer:</strong> {story.content.problem.text} Incumbents suffered from high fees, clunky legacy workflows, and a systemic lack of customer education, leaving Indian consumers and businesses severely underserved.
+            </div>
+
             <ul className="space-y-2.5 pl-2">
               {story.content.problem.painPoints.map((point, idx) => (
                 <li key={idx} className="flex items-start gap-2.5 text-sm sm:text-base">
@@ -390,11 +441,16 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
             </ul>
           </section>
 
-          {/* Technology & Operations */}
-          <section className="pt-4 border-t border-[#0B1F3A]/10 space-y-4">
+          {/* Section 3: H2 in Question-Answer Format (AEO) */}
+          <section className="pt-6 border-t border-[#0B1F3A]/10 space-y-4">
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B1F3A]">
-              {story.content.technologyOperations.title}
+              What Technology and Operational Architecture Built {story.id.toUpperCase()}'s Moat?
             </h2>
+
+            <div className="p-4 bg-amber-50/80 border-l-3 border-[#FF7A00] rounded-r-lg text-xs sm:text-sm text-[#0B1F3A] font-medium leading-relaxed">
+              <strong>Direct Answer:</strong> {story.content.technologyOperations.takeaway} By building in-house proprietary software rather than relying on clunky third-party vendors, the company reduced latencies, scaled throughput, and lowered operational costs.
+            </div>
+
             <div className="space-y-3">
               {story.content.technologyOperations.points.map((pt, idx) => (
                 <div key={idx} className="p-4 bg-white rounded-lg border border-[#0B1F3A]/10">
@@ -402,16 +458,18 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
                 </div>
               ))}
             </div>
-            <div className="p-4 bg-[#F2ECE1] rounded-lg border-l-4 border-[#0B1F3A] text-xs sm:text-sm italic font-medium text-[#0B1F3A]">
-              💡 <strong>Core Takeaway:</strong> {story.content.technologyOperations.takeaway}
-            </div>
           </section>
 
-          {/* Business Model */}
-          <section className="pt-4 border-t border-[#0B1F3A]/10 space-y-4">
+          {/* Section 4: H2 in Question-Answer Format (AEO) */}
+          <section className="pt-6 border-t border-[#0B1F3A]/10 space-y-4">
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B1F3A]">
-              {story.content.businessModel.title}
+              How Does {story.id.toUpperCase()} Make Money: What Is Its Business Model?
             </h2>
+
+            <div className="p-4 bg-amber-50/80 border-l-3 border-[#FF7A00] rounded-r-lg text-xs sm:text-sm text-[#0B1F3A] font-medium leading-relaxed">
+              <strong>Direct Answer:</strong> {story.id.toUpperCase()} operates on a {story.quickFacts.businessModel.split('(')[0]} model, capturing value through predictable transaction volumes, software subscriptions, and high-frequency recurring user activities.
+            </div>
+
             <div className="space-y-3">
               {story.content.businessModel.points.map((pt, idx) => (
                 <div key={idx} className="flex items-start gap-3 p-3.5 bg-white rounded-lg border border-[#0B1F3A]/10">
@@ -424,20 +482,22 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
             </div>
           </section>
 
-          {/* IMAGE 3 — PRODUCT / COMPANY / OPERATIONS (Section 12) */}
-          <div className="my-8 rounded-xl overflow-hidden border border-[#0B1F3A]/15 bg-white shadow-xs">
+          {/* IMAGE 3 — PRODUCT / OPERATIONS (Small Payload with Alt Text) */}
+          <figure className="my-8 rounded-xl overflow-hidden border border-[#0B1F3A]/15 bg-white shadow-xs">
             <div
-              className={`w-full min-h-[260px] bg-gradient-to-r ${story.images.product.fallbackGradient} p-6 sm:p-8 flex flex-col justify-between text-white relative`}
+              className={`w-full h-56 sm:h-64 bg-gradient-to-r ${story.images.product.fallbackGradient} p-6 sm:p-8 flex flex-col justify-between text-white relative`}
+              role="img"
+              aria-label={`Product and operational ecosystem diagram for ${story.id.toUpperCase()}`}
             >
               <div className="relative z-10 flex items-center justify-between">
                 <span className="text-[11px] font-mono bg-black/40 text-[#138A4B] font-bold px-2.5 py-0.5 rounded">
                   FIG. 3 · {story.images.product.badgeText}
                 </span>
-                <span className="text-xs font-mono text-white/70">PRODUCT ARCHITECTURE</span>
+                <span className="text-xs font-mono text-white/70">INFRASTRUCTURE ARCHITECTURE</span>
               </div>
 
-              <div className="relative z-10 my-4">
-                <h3 className="font-display font-bold text-2xl sm:text-3xl text-white">
+              <div className="relative z-10 my-2">
+                <h3 className="font-display font-bold text-xl sm:text-2xl text-white">
                   {story.images.product.title}
                 </h3>
                 <p className="text-xs text-white/80 mt-1 max-w-lg">
@@ -450,34 +510,37 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
               </div>
             </div>
 
-            <div className="p-3 bg-[#F2ECE1] border-t border-[#0B1F3A]/10 text-xs text-[#171717]/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <figcaption className="p-3 bg-[#F2ECE1] border-t border-[#0B1F3A]/10 text-xs text-[#171717]/80 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
               <span>{story.images.product.caption}</span>
               <span className="font-mono text-[11px] text-[#0B1F3A] font-semibold shrink-0">
                 Image credit: {story.images.product.credit}
               </span>
-            </div>
-          </div>
+            </figcaption>
+          </figure>
 
-          {/* Marketing Strategy */}
-          <section className="pt-4 border-t border-[#0B1F3A]/10 space-y-4">
+          {/* Section 5: H2 in Question-Answer Format (AEO) */}
+          <section className="pt-6 border-t border-[#0B1F3A]/10 space-y-4">
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B1F3A]">
-              {story.content.marketingStrategy.title}
+              What Marketing Strategy Allowed {story.id.toUpperCase()} to Grow Sustainably?
             </h2>
+
+            <div className="p-4 bg-amber-50/80 border-l-3 border-[#FF7A00] rounded-r-lg text-xs sm:text-sm text-[#0B1F3A] font-medium leading-relaxed">
+              <strong>Direct Answer:</strong> {story.content.marketingStrategy.lesson} Instead of burning cash on commoditized ad channels, the company unlocked organic growth through education, community identity, and extreme brand trust.
+            </div>
+
             <div className="space-y-3">
               {story.content.marketingStrategy.points.map((pt, idx) => (
                 <p key={idx}>{pt}</p>
               ))}
             </div>
-            <div className="p-4 bg-[#FF7A00]/10 rounded-lg border border-[#FF7A00]/30 text-xs sm:text-sm font-medium text-[#0B1F3A]">
-              🎯 <strong>Marketing Lesson for Students:</strong> {story.content.marketingStrategy.lesson}
-            </div>
           </section>
 
-          {/* Challenges & Scaling */}
-          <section className="pt-4 border-t border-[#0B1F3A]/10 space-y-4">
+          {/* Section 6: H2 in Question-Answer Format (AEO) */}
+          <section className="pt-6 border-t border-[#0B1F3A]/10 space-y-4">
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B1F3A]">
-              Challenges & Headwinds
+              What Critical Challenges and Scaling Headwinds Did the Founders Confront?
             </h2>
+
             <ul className="space-y-2.5 pl-2">
               {story.content.challenges.map((ch, idx) => (
                 <li key={idx} className="flex items-start gap-2.5 text-sm sm:text-base">
@@ -488,12 +551,12 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
             </ul>
           </section>
 
-          {/* Key Lessons for Students & Entrepreneurs */}
+          {/* Section 7: H2 in Question-Answer Format (AEO) */}
           <section className="pt-6 border-t border-[#0B1F3A]/10">
             <div className="flex items-center gap-2 mb-4">
-              <BookOpen className="w-5 h-5 text-[#FF7A00]" />
+              <Sparkles className="w-5 h-5 text-[#FF7A00]" />
               <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[#0B1F3A]">
-                Key Lessons for Students & Entrepreneurs
+                What Are the Core Lessons from {story.id.toUpperCase()} for Students and Entrepreneurs?
               </h2>
             </div>
 
@@ -519,6 +582,30 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
             </div>
           </section>
 
+          {/* On-Page FAQ Block for AEO / Answer Engines */}
+          {seoData?.faqs && seoData.faqs.length > 0 && (
+            <section className="pt-8 border-t border-[#0B1F3A]/10 bg-white rounded-xl p-6 border border-[#0B1F3A]/10 shadow-xs">
+              <div className="flex items-center gap-2 mb-4">
+                <HelpCircle className="w-5 h-5 text-[#138A4B]" />
+                <h2 className="font-display font-bold text-xl text-[#0B1F3A]">
+                  Frequently Asked Questions (AEO Verified Answers)
+                </h2>
+              </div>
+              <div className="space-y-4">
+                {seoData.faqs.map((faq, idx) => (
+                  <div key={idx} className="p-4 bg-[#F7F5F0] rounded-lg">
+                    <h3 className="font-display font-bold text-sm text-[#0B1F3A] mb-1.5">
+                      {faq.question}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#171717]/85 font-body leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Final Takeaway */}
           <section className="p-6 bg-[#0B1F3A] text-white rounded-xl shadow-md my-8">
             <h3 className="font-display font-bold text-lg text-[#FF7A00] uppercase tracking-wider mb-2">
@@ -532,10 +619,10 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
         </div>
 
         {/* SOURCES & REFERENCES (Section 13 requirement) */}
-        <section className="mt-12 pt-8 border-t border-[#0B1F3A]/20 bg-white rounded-xl p-6 sm:p-8 border border-[#0B1F3A]/10">
+        <section aria-labelledby="sources-heading" className="mt-12 pt-8 border-t border-[#0B1F3A]/20 bg-white rounded-xl p-6 sm:p-8 border border-[#0B1F3A]/10">
           <div className="flex items-center gap-2 mb-6">
             <ShieldCheck className="w-5 h-5 text-[#138A4B]" />
-            <h2 className="font-display font-bold text-xl text-[#0B1F3A]">
+            <h2 id="sources-heading" className="font-display font-bold text-xl text-[#0B1F3A]">
               Sources & Institutional References
             </h2>
           </div>
@@ -577,7 +664,7 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
           {/* Academic Citation Box */}
           <div className="mt-6 pt-4 border-t border-[#0B1F3A]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#171717]/60">
             <span>
-              <strong>APA Citation:</strong> {story.author}. (2026). {story.title}. <em>Indian Startup Stories</em>.
+              <strong>APA Citation:</strong> {story.author}. (2026). <em>{story.title}</em>. Indian Startup Stories. Available at: {pagePath}
             </span>
             <button
               onClick={handleCopyCitation}
@@ -588,49 +675,61 @@ export const ArticleView: React.FC<ArticleViewProps> = ({
           </div>
         </section>
 
-        {/* RELATED STORIES (Section 11 requirement) */}
-        <section className="mt-12 pt-8 border-t border-[#0B1F3A]/10">
+        {/* RELATED STORIES with Rich Anchor Text (Requirement 6) */}
+        <section aria-labelledby="related-heading" className="mt-12 pt-8 border-t border-[#0B1F3A]/10">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display font-extrabold text-2xl text-[#0B1F3A]">
-              Related Stories
+            <h2 id="related-heading" className="font-display font-extrabold text-2xl text-[#0B1F3A]">
+              Related Startup Case Studies
             </h2>
-            <button
-              onClick={onBack}
+            <a
+              href="/startup-stories"
+              onClick={(e) => handleLinkClick(e, '/startup-stories')}
               className="text-xs font-semibold text-[#0B1F3A] hover:text-[#FF7A00] flex items-center gap-1"
             >
-              <span>View All 10 Stories</span>
+              <span>Explore All 10 Case Studies</span>
               <ChevronRight className="w-4 h-4" />
-            </button>
+            </a>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {relatedStories.map((rel) => (
-              <div
-                key={rel.id}
-                onClick={() => {
-                  onSelectStory(rel.slug);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                className="bg-white rounded-lg border border-[#0B1F3A]/10 p-4 hover:border-[#0B1F3A] transition-all cursor-pointer group flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between text-[11px] text-[#171717]/50 mb-1">
-                    <span className="font-semibold text-[#0B1F3A]">{rel.category}</span>
-                    <span>{rel.readingTime}</span>
+            {relatedStories.map((rel) => {
+              const relPath = `/startup-stories/${rel.slug}`;
+              return (
+                <div
+                  key={rel.id}
+                  className="bg-white rounded-lg border border-[#0B1F3A]/10 p-4 hover:border-[#0B1F3A] transition-all group flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between text-[11px] text-[#171717]/50 mb-1">
+                      <span className="font-semibold text-[#0B1F3A]">{rel.category}</span>
+                      <span>{rel.readingTime}</span>
+                    </div>
+                    <h3 className="font-display font-bold text-sm text-[#0B1F3A] group-hover:text-[#FF7A00] transition-colors line-clamp-2">
+                      <a
+                        href={relPath}
+                        onClick={(e) => handleLinkClick(e, relPath)}
+                        className="hover:underline"
+                      >
+                        {rel.title}
+                      </a>
+                    </h3>
+                    <p className="text-[11px] text-[#171717]/70 mt-1 line-clamp-2">
+                      {rel.subtitle}
+                    </p>
                   </div>
-                  <h3 className="font-display font-bold text-sm text-[#0B1F3A] group-hover:text-[#FF7A00] transition-colors line-clamp-2">
-                    {rel.title}
-                  </h3>
-                  <p className="text-[11px] text-[#171717]/70 mt-1 line-clamp-2">
-                    {rel.subtitle}
-                  </p>
+                  <div className="mt-3 pt-2 border-t border-[#0B1F3A]/5 text-xs font-semibold text-[#0B1F3A] group-hover:text-[#FF7A00] flex items-center gap-1">
+                    <a
+                      href={relPath}
+                      onClick={(e) => handleLinkClick(e, relPath)}
+                      className="flex items-center gap-1"
+                    >
+                      <span>Read {rel.id.toUpperCase()} Story</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
                 </div>
-                <div className="mt-3 pt-2 border-t border-[#0B1F3A]/5 text-xs font-semibold text-[#0B1F3A] group-hover:text-[#FF7A00] flex items-center gap-1">
-                  <span>Read Article</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
