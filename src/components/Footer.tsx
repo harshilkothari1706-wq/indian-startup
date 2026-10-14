@@ -235,7 +235,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             © {new Date().getFullYear()} Indian Startup Stories. All editorial rights reserved.
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center sm:justify-end">
             <a
               href="/about"
               onClick={(e) => handleLinkClick(e, '/about')}
@@ -252,6 +252,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               title="Review Sourcing Methodology for Funding"
             >
               Sourcing Methodology
+            </a>
+            <span>·</span>
+            <a
+              href="/sitemap.xml"
+              className="hover:text-white transition-colors font-mono text-[11px]"
+              title="XML Sitemap for Google Search Console and crawlers"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              sitemap.xml
             </a>
             <span>·</span>
             <span className="flex items-center gap-1">

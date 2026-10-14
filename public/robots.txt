@@ -1,0 +1,6 @@
+# Robots.txt for Indian Startup Stories
+User-agent: *
+Allow: /
+
+# Sitemap Index for Google Search Console
+Sitemap: https://indian-startup-stories.vercel.app/sitemap.xml

@@ -24,6 +24,7 @@ import { SearchModal } from './components/SearchModal';
 import { NewsletterSection } from './components/NewsletterSection';
 import { Footer } from './components/Footer';
 import { SEOHead } from './components/SEOHead';
+import { SEOKeywordInspector } from './components/SEOKeywordInspector';
 import { STARTUP_STORIES, StartupArticle } from './data/startups';
 import { FOUNDERS, FounderProfile } from './data/founders';
 import { INDUSTRIES, Industry } from './data/industries';
@@ -254,6 +255,9 @@ export default function App() {
         onClose={() => setSearchModalOpen(false)}
         onNavigate={navigateTo}
       />
+
+      {/* Floating Live SEO & Google Search Console Keyword Inspector */}
+      <SEOKeywordInspector currentPath={currentPath} />
 
     </div>
   );
