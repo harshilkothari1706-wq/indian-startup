@@ -12,6 +12,10 @@ import { ExploreIndustries } from './components/ExploreIndustries';
 import { StoryGrid } from './components/StoryGrid';
 import { FounderDirectory } from './components/FounderDirectory';
 import { ArticleView } from './components/ArticleView';
+import { FounderDetailView } from './components/FounderDetailView';
+import { IndustryDetailView } from './components/IndustryDetailView';
+import { MarketingDetailView } from './components/MarketingDetailView';
+import { FailureDetailView } from './components/FailureDetailView';
 import { MarketingPage } from './components/MarketingPage';
 import { FundingPage } from './components/FundingPage';
 import { FailureStoriesPage } from './components/FailureStoriesPage';
@@ -21,9 +25,13 @@ import { NewsletterSection } from './components/NewsletterSection';
 import { Footer } from './components/Footer';
 import { SEOHead } from './components/SEOHead';
 import { STARTUP_STORIES, StartupArticle } from './data/startups';
+import { FOUNDERS, FounderProfile } from './data/founders';
+import { INDUSTRIES, Industry } from './data/industries';
+import { MARKETING_STORIES, MarketingCaseStudy } from './data/marketingStories';
+import { FAILURE_STORIES, FailureCaseStudy } from './data/failureStories';
 
 export default function App() {
-  // Normalize current pathname
+  // Normalize current pathname from browser address bar or hash
   const [currentPath, setCurrentPath] = useState<string>(() => {
     return window.location.pathname || '/';
   });
@@ -68,7 +76,7 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Primary Navigation Dispatcher (updates URL via pushState)
+  // Primary Navigation Dispatcher (updates URL bar via pushState)
   const navigateTo = (path: string) => {
     if (window.location.pathname !== path) {
       window.history.pushState({}, '', path);
@@ -83,27 +91,56 @@ export default function App() {
     );
   };
 
-  // Determine active view based on currentPath
+  // Route Resolution
   let activeStory: StartupArticle | undefined = undefined;
-  let selectedIndustry: string | null = null;
+  let activeFounder: FounderProfile | undefined = undefined;
+  let activeIndustry: Industry | undefined = undefined;
+  let activeMarketingCase: MarketingCaseStudy | undefined = undefined;
+  let activeFailureStudy: FailureCaseStudy | undefined = undefined;
 
+  // 1. /startup-stories/:slug
   if (currentPath.startsWith('/startup-stories/')) {
     const slug = currentPath.replace('/startup-stories/', '').split('?')[0].split('/')[0];
     activeStory = STARTUP_STORIES.find((s) => s.slug === slug);
   }
 
-  // Parse industry filter from search params if present
+  // 2. /founders/:id
+  if (currentPath.startsWith('/founders/')) {
+    const id = currentPath.replace('/founders/', '').split('?')[0].split('/')[0];
+    activeFounder = FOUNDERS.find((f) => f.id === id);
+  }
+
+  // 3. /industries/:id
+  if (currentPath.startsWith('/industries/')) {
+    const id = currentPath.replace('/industries/', '').split('?')[0].split('/')[0];
+    activeIndustry = INDUSTRIES.find((ind) => ind.id === id);
+  }
+
+  // 4. /marketing/:id
+  if (currentPath.startsWith('/marketing/')) {
+    const id = currentPath.replace('/marketing/', '').split('?')[0].split('/')[0];
+    activeMarketingCase = MARKETING_STORIES.find((m) => m.id === id);
+  }
+
+  // 5. /failure-stories/:id
+  if (currentPath.startsWith('/failure-stories/')) {
+    const id = currentPath.replace('/failure-stories/', '').split('?')[0].split('/')[0];
+    activeFailureStudy = FAILURE_STORIES.find((fail) => fail.id === id);
+  }
+
+  // Parse optional query params for industry filter on /startup-stories
+  let selectedIndustryFilter: string | null = null;
   try {
     const params = new URLSearchParams(window.location.search);
-    selectedIndustry = params.get('industry');
+    selectedIndustryFilter = params.get('industry');
   } catch {
-    selectedIndustry = null;
+    selectedIndustryFilter = null;
   }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F7F5F0] text-[#171717] selection:bg-[#FF7A00]/20 selection:text-[#0B1F3A]">
       
-      {/* Dynamic SEO Head Manager (Title, Meta Description, Keywords, OpenGraph, JSON-LD) */}
+      {/* Dynamic SEO Head Manager */}
       <SEOHead currentPath={currentPath} />
 
       {/* Top Header Contract */}
@@ -118,7 +155,7 @@ export default function App() {
       {/* Main Content Area */}
       <main className="flex-1">
         
-        {/* If route matches /startup-stories/:slug and story exists */}
+        {/* Route 1: Unique Startup Story Page (/startup-stories/:slug) */}
         {activeStory ? (
           <ArticleView
             story={activeStory}
@@ -126,58 +163,80 @@ export default function App() {
             isBookmarked={savedSlugs.includes(activeStory.slug)}
             onToggleBookmark={toggleBookmark}
           />
+        ) : activeFounder ? (
+          /* Route 2: Unique Founder Biography Page (/founders/:id) */
+          <FounderDetailView
+            founder={activeFounder}
+            onNavigate={navigateTo}
+          />
+        ) : activeIndustry ? (
+          /* Route 3: Unique Industry Sector Hub (/industries/:id) */
+          <IndustryDetailView
+            industry={activeIndustry}
+            onNavigate={navigateTo}
+            savedSlugs={savedSlugs}
+            onToggleBookmark={toggleBookmark}
+          />
+        ) : activeMarketingCase ? (
+          /* Route 4: Unique Marketing Playbook Page (/marketing/:id) */
+          <MarketingDetailView
+            caseStudy={activeMarketingCase}
+            onNavigate={navigateTo}
+          />
+        ) : activeFailureStudy ? (
+          /* Route 5: Unique Failure Postmortem Page (/failure-stories/:id) */
+          <FailureDetailView
+            study={activeFailureStudy}
+            onNavigate={navigateTo}
+          />
         ) : currentPath === '/startup-stories' ? (
+          /* Route 6: Startup Stories Archive (/startup-stories) */
           <StoryGrid
             onNavigate={navigateTo}
-            selectedIndustryFilter={selectedIndustry}
+            selectedIndustryFilter={selectedIndustryFilter}
             onClearFilter={() => navigateTo('/startup-stories')}
             savedSlugs={savedSlugs}
             onToggleBookmark={toggleBookmark}
           />
         ) : currentPath === '/founders' ? (
+          /* Route 7: Founders Directory (/founders) */
           <FounderDirectory onNavigate={navigateTo} />
         ) : currentPath === '/industries' ? (
+          /* Route 8: Industries Overview (/industries) */
           <div className="py-6">
             <ExploreIndustries onNavigate={navigateTo} />
             <StoryGrid
               onNavigate={navigateTo}
-              selectedIndustryFilter={selectedIndustry}
+              selectedIndustryFilter={selectedIndustryFilter}
               onClearFilter={() => navigateTo('/industries')}
               savedSlugs={savedSlugs}
               onToggleBookmark={toggleBookmark}
             />
           </div>
         ) : currentPath === '/marketing' ? (
+          /* Route 9: Marketing Playbooks Overview (/marketing) */
           <MarketingPage onNavigate={navigateTo} />
         ) : currentPath === '/funding' ? (
+          /* Route 10: Startup Funding Tracker (/funding) */
           <FundingPage onNavigate={navigateTo} />
         ) : currentPath === '/failure-stories' ? (
-          <FailureStoriesPage />
+          /* Route 11: Startup Lessons From Failure Overview (/failure-stories) */
+          <FailureStoriesPage onNavigate={navigateTo} />
         ) : currentPath === '/about' ? (
+          /* Route 12: About & Editorial Verification Policy (/about) */
           <AboutPage />
         ) : (
           /* Default: Home Page (/) */
           <>
-            {/* 1. Hero Section */}
             <Hero onNavigate={navigateTo} />
-
-            {/* 2. Featured Story (Zerodha) */}
             <FeaturedStory onNavigate={navigateTo} />
-
-            {/* 3. 10 Startup Stories Grid */}
             <StoryGrid
               onNavigate={navigateTo}
               savedSlugs={savedSlugs}
               onToggleBookmark={toggleBookmark}
             />
-
-            {/* 4. Explore Industries (8 visual category cards) */}
             <ExploreIndustries onNavigate={navigateTo} />
-
-            {/* 5. Meet the Founders */}
             <FounderDirectory onNavigate={navigateTo} />
-
-            {/* 6. India's Startup Ecosystem (Visual Statistics) */}
             <StartupStats />
           </>
         )}
@@ -186,7 +245,7 @@ export default function App() {
         <NewsletterSection />
       </main>
 
-      {/* Global Footer with Semantic Anchor Links */}
+      {/* Global Footer */}
       <Footer onNavigate={navigateTo} />
 
       {/* Global Instant Search Modal */}

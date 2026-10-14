@@ -1,12 +1,23 @@
 import React, { useState } from 'react';
-import { AlertTriangle, BookOpen, ChevronDown, ChevronUp, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, BookOpen, ChevronDown, ChevronUp, ShieldCheck, ArrowRight } from 'lucide-react';
 import { FAILURE_STORIES, FailureCaseStudy } from '../data/failureStories';
 
-export const FailureStoriesPage: React.FC = () => {
+interface FailureStoriesPageProps {
+  onNavigate?: (path: string) => void;
+}
+
+export const FailureStoriesPage: React.FC<FailureStoriesPageProps> = ({ onNavigate }) => {
   const [expandedId, setExpandedId] = useState<string>(FAILURE_STORIES[0].id);
 
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? '' : id);
+  };
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
+    e.preventDefault();
+    if (onNavigate) {
+      onNavigate(path);
+    }
   };
 
   return (
@@ -37,10 +48,11 @@ export const FailureStoriesPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Failure Case Studies Accordion */}
+        {/* Failure Case Studies Accordion with Unique Page Links */}
         <div className="space-y-6">
           {FAILURE_STORIES.map((study: FailureCaseStudy) => {
             const isExpanded = expandedId === study.id;
+            const uniqueUrl = `/failure-stories/${study.id}`;
             return (
               <div
                 key={study.id}
@@ -160,9 +172,21 @@ export const FailureStoriesPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Historical Reflection & Editorial Note */}
-                    <div className="p-3 bg-slate-100 rounded-lg text-xs italic text-[#171717]/70 font-body">
-                      📝 {study.editorialToneNote}
+                    {/* Historical Reflection & Unique Dedicated URL Link */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-slate-100 rounded-lg text-xs font-body">
+                      <span className="text-[#171717]/70 italic">
+                        📝 {study.editorialToneNote}
+                      </span>
+
+                      <a
+                        href={uniqueUrl}
+                        onClick={(e) => handleLinkClick(e, uniqueUrl)}
+                        title={`Open dedicated postmortem page for ${study.startup}`}
+                        className="inline-flex items-center gap-1 font-bold text-[#0B1F3A] hover:text-[#FF7A00] whitespace-nowrap shrink-0"
+                      >
+                        <span>Open Unique Postmortem Page</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </a>
                     </div>
 
                   </div>

@@ -82,7 +82,7 @@ export const SEO_REGISTRY: Record<string, PageSEO> = {
     breadcrumbName: 'Funding',
   },
 
-  // 7. Failure Stories
+  // 7. Failure Stories Archive
   '/failure-stories': {
     path: '/failure-stories',
     title: 'Startup Failure Lessons – Unit Economics Postmortems',
@@ -102,9 +102,8 @@ export const SEO_REGISTRY: Record<string, PageSEO> = {
     breadcrumbName: 'About',
   },
 
-  // --- 10 Launch Blog Pages (Unique URLs) ---
+  // --- 10 LAUNCH BLOG STORIES ---
 
-  // Blog 01: Zerodha
   '/startup-stories/zerodha': {
     path: '/startup-stories/zerodha',
     title: 'Zerodha Startup Story – How It Changed Stock Broking',
@@ -128,7 +127,6 @@ export const SEO_REGISTRY: Record<string, PageSEO> = {
     ],
   },
 
-  // Blog 02: Zomato
   '/startup-stories/zomato': {
     path: '/startup-stories/zomato',
     title: 'Zomato Startup Story – Menu Scanning to Food-Tech',
@@ -148,7 +146,6 @@ export const SEO_REGISTRY: Record<string, PageSEO> = {
     ],
   },
 
-  // Blog 03: Nykaa
   '/startup-stories/nykaa': {
     path: '/startup-stories/nykaa',
     title: 'Nykaa Startup Story – Falguni Nayar Beauty Empire',
@@ -168,7 +165,6 @@ export const SEO_REGISTRY: Record<string, PageSEO> = {
     ],
   },
 
-  // Blog 04: boAt
   '/startup-stories/boat': {
     path: '/startup-stories/boat',
     title: 'boAt Startup Story – Aman Gupta D2C Audio Brand',
@@ -188,7 +184,6 @@ export const SEO_REGISTRY: Record<string, PageSEO> = {
     ],
   },
 
-  // Blog 05: Razorpay
   '/startup-stories/razorpay': {
     path: '/startup-stories/razorpay',
     title: 'Razorpay Startup Story – Digital Payments Backbone',
@@ -204,7 +199,6 @@ export const SEO_REGISTRY: Record<string, PageSEO> = {
     ],
   },
 
-  // Blog 06: Meesho
   '/startup-stories/meesho': {
     path: '/startup-stories/meesho',
     title: 'Meesho Startup Story – Social Commerce for Bharat',
@@ -220,7 +214,6 @@ export const SEO_REGISTRY: Record<string, PageSEO> = {
     ],
   },
 
-  // Blog 07: Swiggy
   '/startup-stories/swiggy': {
     path: '/startup-stories/swiggy',
     title: 'Swiggy Startup Story – Hyperlocal Delivery Machine',
@@ -236,7 +229,6 @@ export const SEO_REGISTRY: Record<string, PageSEO> = {
     ],
   },
 
-  // Blog 08: Physics Wallah
   '/startup-stories/physics-wallah': {
     path: '/startup-stories/physics-wallah',
     title: 'Physics Wallah Story – Affordable EdTech Unicorn',
@@ -252,7 +244,6 @@ export const SEO_REGISTRY: Record<string, PageSEO> = {
     ],
   },
 
-  // Blog 09: OYO
   '/startup-stories/oyo': {
     path: '/startup-stories/oyo',
     title: 'OYO Startup Story – Ritesh Agarwal Hospitality Tech',
@@ -268,7 +259,6 @@ export const SEO_REGISTRY: Record<string, PageSEO> = {
     ],
   },
 
-  // Blog 10: CRED
   '/startup-stories/cred': {
     path: '/startup-stories/cred',
     title: 'CRED Startup Story – Kunal Shah High-Trust Model',
@@ -282,5 +272,237 @@ export const SEO_REGISTRY: Record<string, PageSEO> = {
         answer: 'Kunal Shah identified that the top creditworthy cohort controls a disproportionate share of consumer spending in India. Curating an affluent, high-trust club attracted premium D2C brands and opened high-margin lending opportunities.',
       },
     ],
+  },
+
+  // --- DEDICATED FOUNDER PROFILES (Unique URLs) ---
+  '/founders/nithin-kamath': {
+    path: '/founders/nithin-kamath',
+    title: 'Nithin Kamath & Nikhil Kamath – Zerodha Founders Bio',
+    metaDescription: 'Explore the life, career, and bootstrapping philosophy of Nithin & Nikhil Kamath, founders of Zerodha, India\'s most profitable retail brokerage.',
+    mainKeyword: 'Nithin Kamath biography',
+    relatedKeywords: ['Nikhil Kamath trader', 'Zerodha founders story'],
+    breadcrumbName: 'Nithin & Nikhil Kamath',
+  },
+  '/founders/deepinder-goyal': {
+    path: '/founders/deepinder-goyal',
+    title: 'Deepinder Goyal – Zomato Founder & CEO Biography',
+    metaDescription: 'Read how Deepinder Goyal built Zomato from Foodiebay into India\'s top food delivery and quick-commerce platform listed on the NSE.',
+    mainKeyword: 'Deepinder Goyal biography',
+    relatedKeywords: ['Zomato founder journey', 'Deepinder Goyal IIT Delhi'],
+    breadcrumbName: 'Deepinder Goyal',
+  },
+  '/founders/falguni-nayar': {
+    path: '/founders/falguni-nayar',
+    title: 'Falguni Nayar – Nykaa Founder & CEO Biography',
+    metaDescription: 'Discover how former investment banker Falguni Nayar founded Nykaa at 50, building India\'s premier omnichannel beauty and fashion empire.',
+    mainKeyword: 'Falguni Nayar biography',
+    relatedKeywords: ['Nykaa founder story', 'women entrepreneurs in India'],
+    breadcrumbName: 'Falguni Nayar',
+  },
+  '/founders/aman-gupta': {
+    path: '/founders/aman-gupta',
+    title: 'Aman Gupta & Sameer Mehta – boAt Founders Story',
+    metaDescription: 'How Aman Gupta and Sameer Mehta created the boAtheads youth lifestyle tribe, outperforming global electronics giants in Indian audio.',
+    mainKeyword: 'Aman Gupta boAt biography',
+    relatedKeywords: ['Sameer Mehta boAt', 'boAt founders journey'],
+    breadcrumbName: 'Aman Gupta & Sameer Mehta',
+  },
+  '/founders/harshil-mathur': {
+    path: '/founders/harshil-mathur',
+    title: 'Harshil Mathur & Shashank Kumar – Razorpay Founders',
+    metaDescription: 'Meet IIT Roorkee alumni Harshil Mathur and Shashank Kumar, who built Razorpay into the software backbone for digital payments across India.',
+    mainKeyword: 'Harshil Mathur Razorpay',
+    relatedKeywords: ['Shashank Kumar Razorpay', 'Razorpay founders background'],
+    breadcrumbName: 'Harshil Mathur & Shashank Kumar',
+  },
+  '/founders/vidit-aatrey': {
+    path: '/founders/vidit-aatrey',
+    title: 'Vidit Aatrey & Sanjeev Barnwal – Meesho Founders',
+    metaDescription: 'Discover how IIT Delhi batchmates Vidit Aatrey and Sanjeev Barnwal unlocked e-commerce for Bharat through zero-commission social commerce.',
+    mainKeyword: 'Vidit Aatrey Meesho',
+    relatedKeywords: ['Sanjeev Barnwal Meesho', 'Meesho founders biography'],
+    breadcrumbName: 'Vidit Aatrey & Sanjeev Barnwal',
+  },
+  '/founders/sriharsha-majety': {
+    path: '/founders/sriharsha-majety',
+    title: 'Sriharsha Majety – Swiggy Co-Founder & CEO Biography',
+    metaDescription: 'Learn how Sriharsha Majety transformed a failed shipping venture into Swiggy, India\'s leading food delivery and Instamart logistics giant.',
+    mainKeyword: 'Sriharsha Majety biography',
+    relatedKeywords: ['Swiggy founder story', 'Sriharsha Majety IIM Calcutta'],
+    breadcrumbName: 'Sriharsha Majety',
+  },
+  '/founders/alakh-pandey': {
+    path: '/founders/alakh-pandey',
+    title: 'Alakh Pandey – Physics Wallah Founder Biography',
+    metaDescription: 'Read the inspiring story of Alakh Pandey, who went from teaching on YouTube in Prayagraj to creating India\'s most profitable EdTech unicorn.',
+    mainKeyword: 'Alakh Pandey biography',
+    relatedKeywords: ['Physics Wallah founder story', 'Alakh Pandey Prayagraj'],
+    breadcrumbName: 'Alakh Pandey',
+  },
+  '/founders/ritesh-agarwal': {
+    path: '/founders/ritesh-agarwal',
+    title: 'Ritesh Agarwal – OYO Founder & Group CEO Biography',
+    metaDescription: 'How 19-year-old Thiel Fellow Ritesh Agarwal standardized budget hotel stays across India and expanded OYO into a global hospitality brand.',
+    mainKeyword: 'Ritesh Agarwal biography',
+    relatedKeywords: ['OYO founder story', 'Thiel Fellow Ritesh Agarwal'],
+    breadcrumbName: 'Ritesh Agarwal',
+  },
+  '/founders/kunal-shah': {
+    path: '/founders/kunal-shah',
+    title: 'Kunal Shah – CRED & Freecharge Founder Biography',
+    metaDescription: 'Explore serial entrepreneur Kunal Shah\'s philosophy on high-trust societies, branding moats, and financial gamification at CRED.',
+    mainKeyword: 'Kunal Shah biography',
+    relatedKeywords: ['CRED founder story', 'Freecharge founder Kunal Shah'],
+    breadcrumbName: 'Kunal Shah',
+  },
+
+  // --- DEDICATED INDUSTRY HUBS (Unique URLs) ---
+  '/industries/fintech': {
+    path: '/industries/fintech',
+    title: 'Indian FinTech Industry – Startups, Scale & Trends',
+    metaDescription: 'Analyze India\'s booming FinTech sector featuring Zerodha, Razorpay, CRED, and PhonePe. Explore market size, UPI scale, and unit economics.',
+    mainKeyword: 'Indian fintech industry',
+    relatedKeywords: ['fintech startups India', 'digital payments ecosystem India'],
+    breadcrumbName: 'FinTech',
+  },
+  '/industries/foodtech': {
+    path: '/industries/foodtech',
+    title: 'FoodTech & Quick Commerce in India – Market Analysis',
+    metaDescription: 'Examine India\'s on-demand FoodTech and 10-minute grocery quick commerce market led by Zomato, Swiggy, Blinkit, and Instamart.',
+    mainKeyword: 'Indian foodtech industry',
+    relatedKeywords: ['quick commerce India market', 'food delivery startups India'],
+    breadcrumbName: 'FoodTech',
+  },
+  '/industries/ecommerce': {
+    path: '/industries/ecommerce',
+    title: 'E-commerce in India – Mass Market & D2C Landscape',
+    metaDescription: 'Discover how Meesho, Nykaa, and Flipkart transformed retail across Bharat through zero commissions, social commerce, and omnichannel beauty.',
+    mainKeyword: 'Indian ecommerce industry',
+    relatedKeywords: ['social commerce India', 'D2C retail ecosystem India'],
+    breadcrumbName: 'E-commerce',
+  },
+  '/industries/edtech': {
+    path: '/industries/edtech',
+    title: 'EdTech Industry in India – Trends, Pricing & Scale',
+    metaDescription: 'Explore the transformation of Indian EdTech from high-burn sales blitzes to sustainable, affordable hybrid coaching led by Physics Wallah.',
+    mainKeyword: 'Indian edtech industry',
+    relatedKeywords: ['affordable education India', 'edtech startups business models'],
+    breadcrumbName: 'EdTech',
+  },
+  '/industries/consumer-tech': {
+    path: '/industries/consumer-tech',
+    title: 'Consumer Tech & Wearables in India – D2C Growth',
+    metaDescription: 'How boAt, Noise, and domestic hardware brands captured India\'s audio and wearables market through youth lifestyle positioning and Make in India.',
+    mainKeyword: 'Indian consumer tech',
+    relatedKeywords: ['D2C electronics India', 'audio wearables market India'],
+    breadcrumbName: 'Consumer Tech',
+  },
+  '/industries/hospitality': {
+    path: '/industries/hospitality',
+    title: 'Hospitality Technology in India – Budget Stays',
+    metaDescription: 'Study the digitization of unbranded budget hotels, homestays, and holiday rentals in India led by OYO and MakeMyTrip.',
+    mainKeyword: 'hospitality technology India',
+    relatedKeywords: ['budget hotels ecosystem India', 'OYO business model analysis'],
+    breadcrumbName: 'Hospitality',
+  },
+  '/industries/healthtech': {
+    path: '/industries/healthtech',
+    title: 'HealthTech in India – Telemedicine & Digital Pharma',
+    metaDescription: 'Analysis of India\'s digital healthcare, e-pharmacy networks, and telemedicine platforms connecting patients with verified care.',
+    mainKeyword: 'Indian healthtech startups',
+    relatedKeywords: ['digital pharmacy India', 'telemedicine startups India'],
+    breadcrumbName: 'HealthTech',
+  },
+  '/industries/saas': {
+    path: '/industries/saas',
+    title: 'Indian SaaS Ecosystem – Global Software Built Locally',
+    metaDescription: 'How Zoho, Freshworks, and Postman built capital-efficient, world-class enterprise software from India powering global enterprises.',
+    mainKeyword: 'Indian SaaS companies',
+    relatedKeywords: ['B2B SaaS India ecosystem', 'Freshworks Zoho business model'],
+    breadcrumbName: 'SaaS',
+  },
+
+  // --- DEDICATED MARKETING PLAYBOOKS (Unique URLs) ---
+  '/marketing/zomato-social-voice': {
+    path: '/marketing/zomato-social-voice',
+    title: 'Zomato Social Media Marketing – Memetic Brand Strategy',
+    metaDescription: 'Case study on how Zomato built a distinctive, witty social media persona and contextual push notifications that drive viral organic food orders.',
+    mainKeyword: 'Zomato marketing strategy',
+    relatedKeywords: ['Zomato push notifications', 'memetic brand voice strategy'],
+    breadcrumbName: 'Zomato Social Voice',
+  },
+  '/marketing/boat-youth-culture': {
+    path: '/marketing/boat-youth-culture',
+    title: 'boAt Youth Culture Marketing – boAtheads Community',
+    metaDescription: 'Discover how boAt positioned consumer audio as streetwear fashion, signing cricketers and Bollywood icons to build the boAtheads tribe.',
+    mainKeyword: 'boAt marketing strategy',
+    relatedKeywords: ['boAtheads community branding', 'lifestyle positioning consumer tech'],
+    breadcrumbName: 'boAt Youth Culture',
+  },
+  '/marketing/nykaa-content-to-commerce': {
+    path: '/marketing/nykaa-content-to-commerce',
+    title: 'Nykaa Content-to-Commerce Strategy – Beauty Playbook',
+    metaDescription: 'How Nykaa uses video masterclasses, beauty guides, and dermatologist advice to convert educational intent into high-margin cosmetics sales.',
+    mainKeyword: 'Nykaa content to commerce',
+    relatedKeywords: ['inbound marketing beauty', 'Nykaa customer acquisition strategy'],
+    breadcrumbName: 'Nykaa Content-to-Commerce',
+  },
+  '/marketing/cred-entertaining-finance': {
+    path: '/marketing/cred-entertaining-finance',
+    title: 'CRED Entertaining Finance – Subversive Ad Playbook',
+    metaDescription: 'Analyze CRED\'s viral IPL celebrity campaigns, dark mode luxury UI, and 750+ credit score exclusivity that transformed bill payments.',
+    mainKeyword: 'CRED advertising strategy',
+    relatedKeywords: ['Rahul Dravid CRED ad', 'subversive fintech marketing'],
+    breadcrumbName: 'CRED Subversive Ads',
+  },
+  '/marketing/zerodha-education-moat': {
+    path: '/marketing/zerodha-education-moat',
+    title: 'Zerodha Varsity Inbound Moat – Zero-CAC Marketing',
+    metaDescription: 'How Zerodha Varsity created a multi-million-learner financial education moat that drives high customer retention with zero advertising spend.',
+    mainKeyword: 'Zerodha Varsity marketing',
+    relatedKeywords: ['zero CAC marketing strategy', 'inbound educational moat'],
+    breadcrumbName: 'Zerodha Varsity Moat',
+  },
+
+  // --- DEDICATED FAILURE CASE STUDIES (Unique URLs) ---
+  '/failure-stories/doodhwala': {
+    path: '/failure-stories/doodhwala',
+    title: 'Doodhwala Postmortem – Unit Economics in Dairy Delivery',
+    metaDescription: 'A factual analysis of Doodhwala: how low gross margins on daily milk delivery failed to cover refrigerated morning logistics costs.',
+    mainKeyword: 'Doodhwala startup failure',
+    relatedKeywords: ['milk delivery unit economics', 'hyperlocal grocery shutdown lessons'],
+    breadcrumbName: 'Doodhwala',
+  },
+  '/failure-stories/stayzilla': {
+    path: '/failure-stories/stayzilla',
+    title: 'Stayzilla Postmortem – Premature Blitzscaling Traps',
+    metaDescription: 'Why Stayzilla shut down: analyzing the dangers of rapid geographic expansion into low-density towns before mastering cash runway.',
+    mainKeyword: 'Stayzilla startup failure',
+    relatedKeywords: ['Stayzilla shutdown lessons', 'marketplace blitzscaling risks'],
+    breadcrumbName: 'Stayzilla',
+  },
+  '/failure-stories/tinyowl': {
+    path: '/failure-stories/tinyowl',
+    title: 'TinyOwl Postmortem – Overhiring & Logistics Flaws',
+    metaDescription: 'How TinyOwl raised millions but collapsed from overhiring, poor restaurant delivery reliability, and uncontrolled monthly payroll burn.',
+    mainKeyword: 'TinyOwl failure analysis',
+    relatedKeywords: ['foodtech startup failure India', 'overhiring startup postmortem'],
+    breadcrumbName: 'TinyOwl',
+  },
+  '/failure-stories/koovs': {
+    path: '/failure-stories/koovs',
+    title: 'Koovs Postmortem – Fashion Deadstock & RTO Expenses',
+    metaDescription: 'Why London-listed fast-fashion startup Koovs failed: inventory depreciation, high return rates (RTO), and high cross-border overhead.',
+    mainKeyword: 'Koovs startup failure',
+    relatedKeywords: ['fast fashion deadstock risks', 'ecommerce return rates India'],
+    breadcrumbName: 'Koovs',
+  },
+  '/failure-stories/byjus-governance-lessons': {
+    path: '/failure-stories/byjus-governance-lessons',
+    title: 'Byju\'s Governance Case Study – Debt & Auditing Lessons',
+    metaDescription: 'Business school analysis of Byju\'s: institutional term loan debt covenants, rapid M&A integration indigestion, and delayed financial audits.',
+    mainKeyword: 'Byjus governance case study',
+    relatedKeywords: ['edtech debt crisis Byjus', 'corporate governance startup lessons'],
+    breadcrumbName: 'Byju\'s Governance',
   },
 };

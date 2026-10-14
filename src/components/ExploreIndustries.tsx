@@ -9,7 +9,7 @@ interface ExploreIndustriesProps {
 export const ExploreIndustries: React.FC<ExploreIndustriesProps> = ({ onNavigate }) => {
   const handleIndustryClick = (e: React.MouseEvent<HTMLAnchorElement>, industryId: string) => {
     e.preventDefault();
-    onNavigate(`/startup-stories?industry=${industryId}`);
+    onNavigate(`/industries/${industryId}`);
   };
 
   return (
@@ -32,10 +32,10 @@ export const ExploreIndustries: React.FC<ExploreIndustriesProps> = ({ onNavigate
           </div>
         </div>
 
-        {/* 8 Visual Category Cards Grid */}
+        {/* 8 Visual Category Cards Grid with Unique URLs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {INDUSTRIES.map((ind: Industry) => {
-            const industryUrl = `/startup-stories?industry=${ind.id}`;
+            const industryUrl = `/industries/${ind.id}`;
             return (
               <div
                 key={ind.id}
@@ -52,7 +52,7 @@ export const ExploreIndustries: React.FC<ExploreIndustriesProps> = ({ onNavigate
                     </span>
                   </div>
 
-                  {/* Industry Title */}
+                  {/* Industry Title with Semantic Unique Link */}
                   <h3 className="font-display font-bold text-lg text-[#0B1F3A] group-hover:text-[#FF7A00] transition-colors">
                     <a
                       href={industryUrl}
@@ -79,10 +79,10 @@ export const ExploreIndustries: React.FC<ExploreIndustriesProps> = ({ onNavigate
                   <a
                     href={industryUrl}
                     onClick={(e) => handleIndustryClick(e, ind.id)}
-                    title={`View all verified Indian ${ind.name} startup stories`}
+                    title={`View dedicated Indian ${ind.name} industry hub and startups`}
                     className="flex items-center gap-1.5"
                   >
-                    <span>View {ind.name} Stories</span>
+                    <span>View {ind.name} Hub</span>
                     <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                   </a>
                 </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Quote, GraduationCap, MapPin, Users } from 'lucide-react';
+import { ArrowRight, Quote, GraduationCap, MapPin, Users, User } from 'lucide-react';
 import { FOUNDERS, FounderProfile } from '../data/founders';
 
 interface FounderDirectoryProps {
@@ -7,9 +7,9 @@ interface FounderDirectoryProps {
 }
 
 export const FounderDirectory: React.FC<FounderDirectoryProps> = ({ onNavigate }) => {
-  const handleFounderClick = (e: React.MouseEvent<HTMLAnchorElement>, startupSlug: string) => {
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, path: string) => {
     e.preventDefault();
-    onNavigate(`/startup-stories/${startupSlug}`);
+    onNavigate(path);
   };
 
   return (
@@ -32,10 +32,11 @@ export const FounderDirectory: React.FC<FounderDirectoryProps> = ({ onNavigate }
           </div>
         </div>
 
-        {/* Founder Cards Grid */}
+        {/* Founder Cards Grid with Unique URLs */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {FOUNDERS.map((founder: FounderProfile) => {
-            const founderStoryUrl = `/startup-stories/${founder.startupSlug}`;
+            const founderProfileUrl = `/founders/${founder.id}`;
+            const startupStoryUrl = `/startup-stories/${founder.startupSlug}`;
             return (
               <div
                 key={founder.id}
@@ -57,9 +58,9 @@ export const FounderDirectory: React.FC<FounderDirectoryProps> = ({ onNavigate }
                       <div>
                         <h3 className="font-display font-bold text-base text-[#0B1F3A] group-hover:text-[#FF7A00] transition-colors">
                           <a
-                            href={founderStoryUrl}
-                            onClick={(e) => handleFounderClick(e, founder.startupSlug)}
-                            title={`Read ${founder.name}'s entrepreneurial journey at ${founder.startup}`}
+                            href={founderProfileUrl}
+                            onClick={(e) => handleLinkClick(e, founderProfileUrl)}
+                            title={`View ${founder.name}'s dedicated founder biography and milestones`}
                           >
                             {founder.name}
                           </a>
@@ -100,21 +101,26 @@ export const FounderDirectory: React.FC<FounderDirectoryProps> = ({ onNavigate }
 
                 </div>
 
-                {/* Founder Card Footer with Semantic Anchor Text (Requirement 6) */}
-                <div className="mt-5 pt-3 border-t border-[#0B1F3A]/10 flex items-center justify-between">
+                {/* Founder Card Footer: Unique Profile URL + Story URL */}
+                <div className="mt-5 pt-3 border-t border-[#0B1F3A]/10 flex items-center justify-between text-xs font-bold">
                   <a
-                    href={founderStoryUrl}
-                    onClick={(e) => handleFounderClick(e, founder.startupSlug)}
-                    title={`Read ${founder.startup} Case Study & ${founder.name}'s Strategy`}
-                    className="inline-flex items-center gap-2 text-xs font-bold text-[#0B1F3A] group-hover:text-[#FF7A00] transition-colors"
+                    href={founderProfileUrl}
+                    onClick={(e) => handleLinkClick(e, founderProfileUrl)}
+                    title={`View dedicated founder profile for ${founder.name}`}
+                    className="text-[#0B1F3A] hover:text-[#FF7A00] transition-colors flex items-center gap-1"
                   >
-                    <span>View {founder.startup} Story</span>
-                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                    <span>Founder Profile</span>
+                    <ArrowRight className="w-3 h-3" />
                   </a>
 
-                  <span className="text-[11px] font-mono text-[#171717]/50">
-                    Est. {founder.foundedYear}
-                  </span>
+                  <a
+                    href={startupStoryUrl}
+                    onClick={(e) => handleLinkClick(e, startupStoryUrl)}
+                    title={`Read ${founder.startup} Case Study`}
+                    className="text-[#FF7A00] hover:underline transition-colors"
+                  >
+                    {founder.startup} Story →
+                  </a>
                 </div>
 
               </div>
